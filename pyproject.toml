@@ -1,0 +1,106 @@
+[project]
+name = "shared-expences"
+version = "0.0.0"
+description = ""
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "advanced-alchemy[argon2,cli]>=1.8.2",
+    "pydantic>=2.12.5",
+    "pydantic-settings>=2.12.0",
+    "psycopg[binary,pool]>=3.3.2",
+    "redis[hiredis]>=7.4.0",
+    "langchain>=1.1.0",
+    "langchain-openrouter>=0.1.0",
+    "langgraph-checkpoint-postgres>=3.0.5",
+    "dishka>=1.7.2",
+]
+
+[dependency-groups]
+dev = [
+    "annotated-types>=0.7.0",
+    "mypy>=1.18.2",
+    "ruff>=0.13.1",
+    "pytest>=8.4.2",
+    "pytest-asyncio>=1.2.0",
+    "pytest-cov>=7.0.0",
+    "pytest-randomly>=4.0.1",
+    "mimesis>=21.0.0",
+    "pytz>=2026.3.post1",  # mimesis timezone dependency
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.mypy]
+strict = true
+strict_bytes = true
+local_partial_types = true
+warn_unreachable = true
+explicit_package_bases = true
+mypy_path = "src"
+plugins = ["pydantic.mypy"]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+preview = true
+select = [
+    "ERA", # eradicate
+    "YTT", # flake8-2020
+    "ANN", # flake8-annotations
+    "ASYNC", # flake8-async
+    "S", # flake8-bandit
+    "BLE", # flake8-blind-except
+    "FBT", # flake8-boolean-trap
+    "B", # flake8-bugbear
+    "A", # flake8-builtins
+    "COM", # flake8-commas
+    "C4", # flake8-comprehensions
+    "DTZ", # flake8-datetimez
+    "T10", # flake8-debugger
+    "ISC", # flake8-implicit-str-concat
+    "ICN", # flake8-import-conventions
+    "LOG", # flake8-logging
+    "G", # flake8-logging-format
+    "INP", # flake8-no-pep420
+    "PIE", # flake8-pie
+    "T20", # flake8-print
+    "PYI", # flake8-pyi
+    "PT", # flake8-pytest-style
+    "Q", # flake8-quotes
+    "RSE", # flake8-raise
+    "RET", # flake8-return
+    "SLF", # flake8-self 
+    "SIM", # flake8-simplify
+    "TID", # flake8-tidy-imports
+    "TD", # flake8-todos
+    "ARG", # flake8-unused-arguments
+    "PTH", # flake8-use-pathlib
+    "I", # isort
+    "C90", # mccabe    
+    "N", # pep8-naming
+    "PERF", # perflint
+    "E", # pycodestyle errors
+    "W", # pycodestyle warnings
+    "F", # pyflakes
+    "PGH", # pygrep-hooks
+    "PL", # pylint
+    "UP", # pyupgrade
+    "FURB", # refurb
+    "RUF", # ruff
+    "TRY", # tryceratops
+]
+ignore = [
+    "missing-trailing-comma"# ruff warn on it
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["assert"] # Do not trigger on asserts in tests
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
