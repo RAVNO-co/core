@@ -88,7 +88,7 @@ class Receipt:
         self._check_user_participant(user_id)
         self._find_existing_item(line_item_id).add_payment(user_id, amount)
 
-    def disassign_consumption(
+    def unassign_consumption(
         self, line_item_id: LineItemID, user_id: UserID, amount: Amount
     ) -> None:
         self._check_user_participant(user_id)
@@ -96,7 +96,7 @@ class Receipt:
             user_id, amount
         )
 
-    def disassign_payment(
+    def unassign_payment(
         self, line_item_id: LineItemID, user_id: UserID, amount: Amount
     ) -> None:
         self._check_user_participant(user_id)

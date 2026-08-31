@@ -143,7 +143,7 @@ def test_consumption_disassigning(
     initial = deepcopy(line_item)
     user_id, amount = next(iter(line_item.consumptions.items()))
 
-    receipt.disassign_consumption(line_item.id, user_id, amount)
+    receipt.unassign_consumption(line_item.id, user_id, amount)
 
     assert user_id not in line_item.consumptions
     assert_compare_line_items(line_item, initial)
@@ -183,7 +183,7 @@ def test_payment_disassigning(
     initial = deepcopy(line_item)
     user_id, amount = next(iter(line_item.payments.items()))
 
-    receipt.disassign_payment(line_item.id, user_id, amount)
+    receipt.unassign_payment(line_item.id, user_id, amount)
 
     assert user_id not in line_item.payments
     assert_compare_line_items(line_item, initial)

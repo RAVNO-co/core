@@ -1,10 +1,9 @@
-from abc import abstractmethod
 from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import NewType, Protocol
 
-from core.application.common.asr import RecognizedSpeechText
-from core.application.common.ocr import RecognizedImageText
+from core.application.common.asr import SpeechText
+from core.application.common.ocr import ImageText
 from core.domain.models import Receipt, User
 from core.domain.value_objects import MessageText, UserID
 
@@ -12,9 +11,9 @@ from core.domain.value_objects import MessageText, UserID
 @dataclass(slots=True, frozen=True)
 class HumanRequest:
     user_id: UserID
-    users_input: MessageText | None
-    transcribed_audios: Iterable[RecognizedSpeechText]
-    transcribed_photos: Iterable[RecognizedImageText]
+    message_text: MessageText | None
+    transcribed_audios: Iterable[SpeechText]
+    transcribed_photos: Iterable[ImageText]
 
 
 AgentMessage = NewType("AgentMessage", str)
@@ -27,8 +26,6 @@ class AgentResponse:
 
 
 class AgentI(Protocol):
-    @abstractmethod
     async def invoke(
         self, request: HumanRequest, receipt: Receipt, participants: list[User]
-    ) -> AgentResponse:
-        raise NotImplementedError
+    ) -> AgentResponse: ...

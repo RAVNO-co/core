@@ -1,12 +1,9 @@
-from abc import abstractmethod
 from typing import NewType, Protocol
 
 from core.domain.value_objects.types import Audio
 
-RecognizedSpeechText = NewType("RecognizedSpeechText", str)
+SpeechText = NewType("SpeechText", str)
 
 
-class SpeechRecognizerI(Protocol):
-    @abstractmethod
-    async def recognize_text(self, audio: Audio) -> RecognizedSpeechText:
-        raise NotImplementedError
+class AutomaticSpeechRecognizerI(Protocol):
+    async def recognize_text(self, audio: Audio) -> SpeechText: ...
