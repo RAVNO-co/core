@@ -13,7 +13,6 @@ class _AmountABC(Decimal, ABC):
 
     Rewrites returned Decimal types
     Cant be less or equal 0
-    Has custom precision syntaxt
     """
 
     def __new__(
