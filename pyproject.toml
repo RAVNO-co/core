@@ -3,7 +3,7 @@ name = "shared-expences"
 version = "0.0.0"
 description = ""
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.14,<4.0.0"
 dependencies = [
     "advanced-alchemy[argon2,cli]>=1.8.2",
     "pydantic>=2.12.5",
@@ -28,6 +28,9 @@ dev = [
     "mimesis>=21.0.0",
     "pytz>=2026.3.post1",  # mimesis timezone dependency
 ]
+
+[tool.poetry]
+package-mode = false
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

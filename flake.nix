@@ -19,7 +19,9 @@
       {
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
+            gnumake
             poetry
+            python314
           ];
           shellHook = ''
             export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${

@@ -1,13 +1,13 @@
 format:
-	uv run ruff format
-	uv run ruff check --fix
+	poetry run ruff format
+	poetry run ruff check --fix
 
 lint:
-	uv run ruff check
-	uv run mypy src tests
+	poetry run ruff check
+	poetry run mypy src tests
 
 test:
-	uv run pytest
+	poetry run pytest
 
 coverage:
-	uv run pytest --cov=src --cov-report=term-missing:skip-covered
+	poetry run pytest --cov=src --cov-report=term-missing:skip-covered
