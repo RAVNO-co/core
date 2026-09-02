@@ -13,14 +13,14 @@ permissions:
 
 env: # Keep in sync with dockerfile
   PYTHON_VERSION: ">=3.14"
-  POETRY_VERSION: "2.4"
+  POETRY_VERSION: "2.4.1"
 
 jobs:
   ruff:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v7
-      - run: "pipx install poetry"
+      - run: "pipx install poetry==${{POETRY_VERSION}}"
       - uses: actions/setup-python@v7
         with:
           python-version: ${{env.PYTHON_VERSION}}
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v7
-      - run: "pipx install poetry"
+      - run: "pipx install poetry==${{POETRY_VERSION}}"
       - uses: actions/setup-python@v7
         with:
           python-version: ${{env.PYTHON_VERSION}}
@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v7
-      - run: "pipx install poetry"
+      - run: "pipx install poetry==${{POETRY_VERSION}}"
       - uses: actions/setup-python@v7
         with:
           python-version: ${{env.PYTHON_VERSION}}
