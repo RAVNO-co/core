@@ -13,7 +13,7 @@ wheels/
 .ruff_cache
 .mypy_cache
 .pytest_cache
-.coverage
+.coverage*
 
 # Venv
 .venv
