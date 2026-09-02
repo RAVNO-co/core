@@ -18,9 +18,9 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v7
+      - run: "pipx install poetry"
       - uses: actions/setup-python@v7
         with:
           python-version: ${{env.PYTHON_VERSION}}
           cache: "poetry"
-      - run: "pipx install poetry"
       - run: "poetry run ruff check"
