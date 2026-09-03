@@ -1,4 +1,4 @@
-name: Linting and tests for python projects
+name: Python linting and tests
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

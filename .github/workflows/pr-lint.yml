@@ -1,4 +1,4 @@
-name: Commit and Branches linting
+name: PR linting
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
