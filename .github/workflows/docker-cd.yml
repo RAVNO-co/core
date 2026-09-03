@@ -1,4 +1,4 @@
-name: Dockerfile linting
+name: Docker image build and push
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -8,40 +8,18 @@ permissions:
   contents: read
 
 on:
-  pull_request:
-    paths:
-      - Dockerfile
-      - .github/workflows/docker-ci.yml
   push:
     branches:
       - main
-  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
   IMAGE: ghcr.io/ravno-co/core:staging
 
 jobs:
-  lint:
-    name: Hadolint linting
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Lint Dockerfile
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          dockerfile: Dockerfile
-          failure-threshold: style
-
   build:
     name: Build and push Docker image
     needs: lint
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
