@@ -27,11 +27,6 @@ jobs:
       - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
-      - name: Pipx cache
-        uses: actions/cache@v6
-        with:
-          path: ${{ steps.pipx-env-setup.outputs.pipx-cache-path }}
-          key: ${{ runner.os }}-python-${{ steps.setup-python.outputs.python-version }}-pipx-${{ steps.pipx-env-setup.outputs.pipx-version }}-poetry-${{ inputs.poetry-version }}
       - run: "pipx install poetry==${POETRY_VERSION}"
       - uses: actions/setup-python@v7
         with:
