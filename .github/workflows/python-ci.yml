@@ -1,5 +1,9 @@
 name: Linting and tests for python projects
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
   merge_group:
@@ -8,23 +12,24 @@ on:
       - main
   workflow_dispatch:
 
-concurrency:
-  cancel-in-progress: true
-
 permissions:
   contents: read
-  code-quality: write
 
-env: # Keep in sync with dockerfile
+env:  # Keep in sync with dockerfile
   PYTHON_VERSION: ">=3.14"
   POETRY_VERSION: "2.4.1"
 
 jobs:
   ruff:
+    name: Ruff linting
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@v7
-      - run: "pipx install poetry==${{POETRY_VERSION}}"
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - run: "pipx install poetry==${POETRY_VERSION}"
+        env:
+          POETRY_VERSION: ${{POETRY_VERSION}}
       - uses: actions/setup-python@v7
         with:
           python-version: ${{env.PYTHON_VERSION}}
@@ -36,10 +41,15 @@ jobs:
       - run: "poetry install"
       - run: "poetry run ruff check"
   mypy:
+    name: Mypy typechecking
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@v7
-      - run: "pipx install poetry==${{POETRY_VERSION}}"
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - run: "pipx install poetry==${POETRY_VERSION}"
+        env:
+          POETRY_VERSION: ${{POETRY_VERSION}}
       - uses: actions/setup-python@v7
         with:
           python-version: ${{env.PYTHON_VERSION}}
@@ -51,11 +61,16 @@ jobs:
       - run: "poetry install"
       - run: "poetry run mypy src tests"
   pytest:
+    name: Tests and coverage reporting
     needs: [ ruff, mypy ]
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@v7
-      - run: "pipx install poetry==${{POETRY_VERSION}}"
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - run: "pipx install poetry==${POETRY_VERSION}"
+        env:
+          POETRY_VERSION: ${{POETRY_VERSION}}
       - uses: actions/setup-python@v7
         with:
           python-version: ${{env.PYTHON_VERSION}}
@@ -67,6 +82,6 @@ jobs:
       - run: "poetry install"
       - run: "poetry run pytest --cov=src --cov-report=xml"
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7.0.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

@@ -22,6 +22,7 @@
             gnumake
             poetry
             python314
+            zizmor
           ];
           shellHook = ''
             export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${
