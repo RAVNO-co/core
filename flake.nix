@@ -33,6 +33,9 @@
                 stdenv.cc.cc.lib
               ]
             };
+
+            poetry install
+
             $SHELL
           '';
         };
