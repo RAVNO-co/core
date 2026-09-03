@@ -29,10 +29,15 @@ jobs:
       - uses: docker/metadata-action@v6
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
       - uses: docker/bake-action@v7
         with:
           files: |
             ./docker-bake.hcl
             cwd://${{ steps.meta.outputs.bake-file }}
           targets: build
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v7
+        with:
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
