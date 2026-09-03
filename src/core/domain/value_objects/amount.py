@@ -20,7 +20,8 @@ class _AmountABC(Decimal, ABC):
         value: _NewDecimal,
         prev: Self | None = None,
     ) -> Self:
-        if float(value) <= 0:
+        value = Decimal(value)
+        if value <= 0 and value.is_finite():
             raise NegativeOrZeroAmountError(prev, value)
         return super().__new__(cls, value)
 
