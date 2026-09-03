@@ -16,6 +16,6 @@ jobs:
           fetch-depth: 0
       - uses: mattzcarey/shippie@v0.21.2
         with:
-          MODEL: google/gemini-3.7-flash
+          MODEL: openrouter/google/gemini-3.7-flash
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
