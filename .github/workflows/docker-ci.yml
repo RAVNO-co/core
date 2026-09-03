@@ -1,0 +1,30 @@
+name: Dockerfile linting
+
+on:
+  pull_request:
+    paths:
+      - Dockerfile
+      - '.github/workflows/docker-ci.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - Dockerfile
+      - '.github/workflows/docker-ci.yml'
+  workflow_dispatch:
+
+concurrency:
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v7
+      - uses: hadolint/hadolint-action@v3
+        with:
+          dockerfile: 'Dockerfile'
+          failure-threshold: style
