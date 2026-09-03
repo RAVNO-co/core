@@ -2,6 +2,9 @@ FROM python:3.14-slim
 
 ARG POETRY_VERSION="2.4.1"
 
+ARG UID=1000
+ARG GID=1000
+
 ENV PYTHONFAULTHANDLER=1 \
   PYTHONUNBUFFERED=1 \
   PYTHONHASHSEED=random \
@@ -22,9 +25,9 @@ SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 WORKDIR /code
 
 # Add non-root user
-RUN groupadd -g "${GID}" -r core \
-  && useradd -d '/code' -g core -l -r -u "${UID}" core \
-  && chown core:core -R '/code'
+RUN groupadd -g "${GID}" -r core && \
+    useradd -d '/code' -g core -l -r -u "${UID}" core && \
+    chown core:core -R '/code'
 
 RUN pip install poetry==${POETRY_VERSION}
 COPY --chown=core:core ./poetry.lock ./pyproject.toml /code/
