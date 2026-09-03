@@ -64,9 +64,7 @@ jobs:
       - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
-      - run: "pipx install poetry==${POETRY_VERSION}"
-        env:
-          POETRY_VERSION: ${{POETRY_VERSION}}
+      - run: "pipx install poetry==${env.POETRY_VERSION}"
       - uses: actions/setup-python@v7
         with:
           python-version: ${{env.PYTHON_VERSION}}
