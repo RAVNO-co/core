@@ -4,31 +4,71 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     paths:
       - Dockerfile
-      - '.github/workflows/docker-ci.yml'
+      - .github/workflows/docker-ci.yml
   push:
     branches:
       - main
-    paths:
-      - Dockerfile
-      - '.github/workflows/docker-ci.yml'
   workflow_dispatch:
 
-permissions:
-  contents: read
+env:
+  REGISTRY: ghcr.io
+  IMAGE: ghcr.io/ravno-co/core:staging
 
 jobs:
   lint:
     name: Hadolint linting
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v7.0.1
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
-      - uses: hadolint/hadolint-action@v3.1.0
+
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
         with:
-          dockerfile: 'Dockerfile'
+          dockerfile: Dockerfile
           failure-threshold: style
+
+  build:
+    name: Build and push Docker image
+    needs: lint
+    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write  # Push to ghcr
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ${{ env.IMAGE }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

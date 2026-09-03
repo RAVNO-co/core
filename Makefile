@@ -7,7 +7,7 @@ lint:
 	poetry check
 	poetry run ruff check
 	poetry run mypy src tests
-	zizmor .github/workflows/ --fix --pedantic
+	zizmor .github/workflows/ --pedantic
 	hadolint Dockerfile -t style
 
 test:
