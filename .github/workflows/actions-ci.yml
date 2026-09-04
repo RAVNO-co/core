@@ -1,0 +1,31 @@
+name: GitHub Actions Linting 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    paths: [ .github/workflows/** ]
+  push:
+    branches: ["main"]
+    paths: [ .github/workflows/** ]
+
+permissions:
+  contents: read
+
+jobs:
+  zizmor:
+    name: Zizmor lint
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write  # Security reporting
+      contents: read
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: zizmorcore/zizmor-action@v0.6.3
+
+
