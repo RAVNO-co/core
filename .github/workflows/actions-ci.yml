@@ -27,5 +27,7 @@ jobs:
           persist-credentials: false
 
       - uses: zizmorcore/zizmor-action@v0.6.3
+        with:
+          persona: pedantic
 
 

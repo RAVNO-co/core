@@ -1,5 +1,9 @@
 name: AI review
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   workflow_dispatch:
     inputs:
@@ -19,11 +23,11 @@ on:
         description: "Pull Request number to review"
 
 permissions:
-  pull-requests: write # Write comments 
   contents: read
 
 jobs:
   review:
+    name: AI review
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
@@ -32,6 +36,8 @@ jobs:
       - uses: Nikita-Filonov/ai-review@v0.77.0
         with:
           review-command: ${{ inputs.review-command }}
+        permissions:
+          pull-requests: write # Write comments 
         env:
           LLM__PROVIDER: "OPENROUTER"
           LLM__META__MODEL: "openai/gpt-5.6-luna"
