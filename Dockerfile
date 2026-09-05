@@ -36,7 +36,7 @@ RUN poetry install --without=dev
 COPY . /code/
 
 # Set non-root user
-USER core
+USER ${UID}
 
 #TODO
 CMD [ "poetry", "run", "python", "-m", "uuid"]
