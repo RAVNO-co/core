@@ -52,3 +52,6 @@ jobs:
           VCS__PIPELINE__PULL_NUMBER: ${{ inputs.pull-request-number }}
           VCS__HTTP_CLIENT__API_URL: "https://api.github.com"
           VCS__HTTP_CLIENT__API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          REVIEW__REVIEW_ADDED_MARKER: ""
+          REVIEW__REVIEW_REMOVED_MARKER: ""
