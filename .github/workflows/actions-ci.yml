@@ -6,10 +6,10 @@ concurrency:
 
 on:
   pull_request:
-    paths: [ .github/workflows/** ]
+    paths: [ .github/** ]
   push:
     branches: ["main"]
-    paths: [ .github/workflows/** ]
+    paths: [ .github/** ]
 
 permissions:
   contents: read
