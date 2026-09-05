@@ -4,9 +4,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-permissions: 
-  contents: read
-
 on:
   workflow_dispatch:
     inputs:
@@ -24,6 +21,9 @@ on:
         type: string
         required: true
         description: "Pull Request number to review"
+
+permissions:
+  contents: read
 
 jobs:
   review:
