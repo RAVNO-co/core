@@ -33,6 +33,7 @@ jobs:
       - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: Nikita-Filonov/ai-review@v0.77.0
         with:
           review-command: ${{ inputs.review-command }}
