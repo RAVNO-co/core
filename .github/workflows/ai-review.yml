@@ -7,14 +7,9 @@ on:
         type: choice
         default: "run"
         options:
-          - run
           - run-inline
           - run-context
-          - run-summary
-          - run-inline-reply
-          - run-summary-reply
           - clear-inline
-          - clear-summary
         required: true
         description: "Review command (https://github.com/Nikita-Filonov/ai-review/tree/main/docs/cli#-available-commands)"
 
@@ -25,7 +20,7 @@ on:
 
 permissions:
   pull-requests: write # Write comments 
-  contents: read # Read contents of pull request and whole repository for context
+  contents: read
 
 jobs:
   review:
