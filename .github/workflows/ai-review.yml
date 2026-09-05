@@ -31,7 +31,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write # Write comments 
-      contents: read
     steps:
       - uses: actions/checkout@v7.0.1
         with:
