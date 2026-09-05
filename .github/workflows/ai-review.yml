@@ -1,5 +1,11 @@
 name: AI review
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+
 on:
   workflow_dispatch:
     inputs:
@@ -18,17 +24,18 @@ on:
         required: true
         description: "Pull Request number to review"
 
-permissions:
-  pull-requests: write # Write comments 
-  contents: read
-
 jobs:
   review:
+    name: AI review
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write # Write comments 
+      contents: read
     steps:
       - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: Nikita-Filonov/ai-review@v0.77.0
         with:
           review-command: ${{ inputs.review-command }}
@@ -45,3 +52,6 @@ jobs:
           VCS__PIPELINE__PULL_NUMBER: ${{ inputs.pull-request-number }}
           VCS__HTTP_CLIENT__API_URL: "https://api.github.com"
           VCS__HTTP_CLIENT__API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          REVIEW__REVIEW_ADDED_MARKER: ""
+          REVIEW__REVIEW_REMOVED_MARKER: ""
