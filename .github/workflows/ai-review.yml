@@ -1,7 +1,27 @@
 name: AI review
 
 on:
-  pull_request:
+  workflow_dispatch:
+    inputs:
+      review-command:
+        type: choice
+        default: "run"
+        options:
+          - run
+          - run-inline
+          - run-context
+          - run-summary
+          - run-inline-reply
+          - run-summary-reply
+          - clear-inline
+          - clear-summary
+        required: true
+        description: "Review command (mode)"
+
+      pull-request-number:
+        type: string
+        required: true
+        description: "Pull Request number to review"
 
 permissions:
   pull-requests: write
@@ -14,8 +34,19 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: mattzcarey/shippie@v0.21.2
+      - uses: Nikita-Filonov/ai-review@v0.77.0
         with:
-          MODEL: openrouter/google/gemini-3.7-flash
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          review-command: ${{ inputs.review-command }}
+        env:
+          LLM__PROVIDER: "OPENROUTER"
+          LLM__META__MODEL: "openai/gpt-5.6-luna"
+          LLM__META__TEMPERATURE: "0.3"
+          LLM__HTTP_CLIENT__API_URL: "https://openrouter.ai/api/v1"
+          LLM__HTTP_CLIENT__API_TOKEN: ${{ secrets.OPENROUTER_API_KEY }}
+
+          VCS__PROVIDER: "GITHUB"
+          VCS__PIPELINE__OWNER: ${{ github.repository_owner }}
+          VCS__PIPELINE__REPO: ${{ github.event.repository.name }}
+          VCS__PIPELINE__PULL_NUMBER: ${{ inputs.pull-request-number }}
+          VCS__HTTP_CLIENT__API_URL: "https://api.github.com"
+          VCS__HTTP_CLIENT__API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
