@@ -4,10 +4,6 @@ from decimal import Decimal
 
 from core.domain.exceptions import ReceiptNotFullyFilledError
 from core.domain.models import Receipt
-from core.domain.services.form_settlement_tables import (
-    FormConsumptionTable,
-    FormPaymentTable,
-)
 from core.domain.value_objects import (
     ConsumptionTable,
     Money,
@@ -16,8 +12,18 @@ from core.domain.value_objects import (
 )
 from core.domain.value_objects.settlement import TransactionInstructions
 
+from .form_settlement_tables import FormConsumptionTable, FormPaymentTable
+
 
 class FormTransactionInstructions:
+    def __init__(
+        self,
+        form_consumption_table: FormConsumptionTable,
+        form_payemnt_table: FormPaymentTable,
+    ) -> None:
+        self.form_consumption_table = form_consumption_table
+        self.form_payemnt_table = form_payemnt_table
+
     def __call__(self, receipt: Receipt) -> TransactionInstructions:
         if not receipt.is_filled:
             raise ReceiptNotFullyFilledError
@@ -35,8 +41,12 @@ class FormTransactionInstructions:
                 if user_id is not None
             )
 
-        payment_generator = summarize_settlement(FormPaymentTable()(receipt))
-        debt_generator = summarize_settlement(FormConsumptionTable()(receipt))
+        payment_generator = summarize_settlement(
+            self.form_payemnt_table(receipt)
+        )
+        debt_generator = summarize_settlement(
+            self.form_consumption_table(receipt)
+        )
 
         debtor_id, debt = next(debt_generator)
         for payer_id, total_paid in payment_generator:

@@ -42,5 +42,10 @@ def form_payment_table() -> FormPaymentTable:
 
 
 @pytest.fixture
-def form_transaction_instructions() -> FormTransactionInstructions:
-    return FormTransactionInstructions()
+def form_transaction_instructions(
+    form_payment_table: FormPaymentTable,
+    form_consumption_table: FormConsumptionTable,
+) -> FormTransactionInstructions:
+    return FormTransactionInstructions(
+        form_consumption_table, form_payment_table
+    )
