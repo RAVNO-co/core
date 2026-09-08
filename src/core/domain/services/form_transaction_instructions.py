@@ -39,8 +39,8 @@ class FormTransactionInstructions:
         debt_generator = summarize_settlement(FormConsumptionTable()(receipt))
 
         debtor_id, debt = next(debt_generator)
-        for payer_id, total_payed in payment_generator:
-            to_return = total_payed
+        for payer_id, total_paid in payment_generator:
+            to_return = total_paid
 
             while to_return > 0:
                 returned = min(to_return, debt)
