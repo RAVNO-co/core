@@ -4,7 +4,10 @@ import pytest
 from mimesis import Field, Schema
 
 from core.domain.models.user import DummyUser, RealUser
-from core.domain.services import create_dummy_user, create_real_user
+from core.domain.services import (
+    CreateDummyUser,
+    CreateRealUser,
+)
 from core.domain.value_objects.types import UserID, UserNickname
 
 
@@ -43,6 +46,9 @@ def user_data(user_data_factory: UserDataFactory) -> UserData:
     return user_data_factory()
 
 
+create_real_user = CreateRealUser()
+
+
 @pytest.fixture
 def real_user_factory(user_data_factory: UserDataFactory) -> RealUserFactory:
     def factory(**fields: Unpack[UserData]) -> RealUser:
@@ -57,6 +63,9 @@ def real_user_factory(user_data_factory: UserDataFactory) -> RealUserFactory:
 @pytest.fixture
 def real_user(real_user_factory: RealUserFactory) -> RealUser:
     return real_user_factory()
+
+
+create_dummy_user = CreateDummyUser()
 
 
 @pytest.fixture

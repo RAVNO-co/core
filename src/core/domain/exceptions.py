@@ -1,15 +1,13 @@
 from decimal import Decimal
-from typing import Annotated, Literal
+from typing import TYPE_CHECKING, Literal
 
-from annotated_types import Gt
-
-from core.domain.value_objects.types import (
-    AssignmentKind,
-    LineItemID,
-    UserID,
-)
-
-Amount = Annotated[Decimal, Gt(0)]
+if TYPE_CHECKING:
+    from core.domain.value_objects import (
+        Amount,
+        AssignmentKind,
+        LineItemID,
+        UserID,
+    )
 
 
 class DomainError(Exception): ...
