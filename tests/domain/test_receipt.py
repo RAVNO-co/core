@@ -3,8 +3,12 @@ from typing import cast
 
 import pytest
 
-from core.domain.exceptions import UserNotParticipantError
-from core.domain.models import RealUser, Receipt
+from core.domain.exceptions import (
+    AmountInUseError,
+    LineItemNotInReceiptError,
+    UserNotParticipantError,
+)
+from core.domain.models import LineItem, RealUser, Receipt
 from core.domain.value_objects import Amount
 from tests.mocks import (
     AssignmentDataFactory,
@@ -109,6 +113,16 @@ def test_full_item_delition(
     assert line_item not in receipt.items
 
 
+def test_in_use_error_on_item_delition(
+    receipt_factory: ReceiptFactory,
+) -> None:
+    receipt = receipt_factory(min_collection_lenght=1)
+    line_item = next(iter(receipt.items))
+
+    with pytest.raises(AmountInUseError):
+        receipt.remove_item(line_item.id, line_item.total_amount)
+
+
 def test_consumption_assigning(
     receipt_factory: ReceiptFactory,
 ) -> None:
@@ -187,3 +201,12 @@ def test_payment_disassigning(
 
     assert user_id not in line_item.payments
     assert_compare_line_items(line_item, initial)
+
+
+def test_line_item_not_in_receipt_error(
+    receipt: Receipt, line_item: LineItem
+) -> None:
+    user_id = next(iter(line_item.payments.keys()))
+
+    with pytest.raises(LineItemNotInReceiptError):
+        receipt.assign_payment(line_item.id, user_id, line_item.total_amount)

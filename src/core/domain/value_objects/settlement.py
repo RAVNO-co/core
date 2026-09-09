@@ -1,23 +1,23 @@
-from dataclasses import dataclass, field
+from collections.abc import Iterable
+from dataclasses import dataclass
 from typing import Annotated, Literal, NewType
 
 from annotated_types import Gt
-from typing_extensions import Doc
 
 from .amount import Amount, Money
 from .types import LineItemID, LineItemName, UserID
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(init=False, frozen=True, slots=True)
 class Settlement:
     """
     Tuple of items assigned to user
     """
 
-    items: Annotated[
-        list[SettlementItem],
-        Doc("Mutable with current implementation, but should not be changed"),
-    ] = field(default_factory=list)
+    def __init__(self, items: Iterable[SettlementItem]) -> None:
+        object.__setattr__(self, "items", tuple(items))
+
+    items: tuple[SettlementItem, ...]
 
     @property
     def total(self) -> Money | Literal[0]:
