@@ -66,7 +66,12 @@ class Agent(AgentI):
         ]
         self.llm_with_tools = client.bind_tools(self.tools)
         self.checkpointer = checkpointer
-        self.agent: CompiledStateGraph = self._agent_compile()
+        self.agent: CompiledStateGraph[
+            ReceiptModificationState,
+            ReceiptModificationContext,
+            InvokeState,
+            ReceiptModificationState,
+        ] = self._agent_compile()
 
     async def invoke(
         self, request: HumanRequest, receipt: Receipt, participants: list[User]
@@ -129,7 +134,12 @@ class Agent(AgentI):
 
     def _agent_compile(
         self,
-    ) -> CompiledStateGraph:
+    ) -> CompiledStateGraph[
+        ReceiptModificationState,
+        ReceiptModificationContext,
+        InvokeState,
+        ReceiptModificationState,
+    ]:
         agent_builder = StateGraph(ReceiptModificationState)
         agent_builder.add_node("show_receipt", self._show_receipt_node)
         agent_builder.add_node("llm_call", self._llm_call)
