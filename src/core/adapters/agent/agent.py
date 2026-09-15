@@ -140,7 +140,16 @@ class Agent(AgentI):
         InvokeState,
         ReceiptModificationState,
     ]:
-        agent_builder = StateGraph(ReceiptModificationState)
+        agent_builder = StateGraph[
+            ReceiptModificationState,
+            ReceiptModificationContext,
+            InvokeState,
+            ReceiptModificationState,
+        ](
+            state_schema=ReceiptModificationState,
+            context_schema=ReceiptModificationContext,
+            input_schema=InvokeState,
+        )
         agent_builder.add_node("show_receipt", self._show_receipt_node)
         agent_builder.add_node("llm_call", self._llm_call)
         agent_builder.add_node("tool_node", ToolNode(self.tools))
