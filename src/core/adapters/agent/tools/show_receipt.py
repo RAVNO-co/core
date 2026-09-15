@@ -5,8 +5,8 @@ from langgraph.types import Command
 from core.adapters.agent.templating import (
     show_receipt_tool_prompt_template,
 )
-from core.domain.receipt import Receipt
-from core.domain.user import User
+from core.domain.models.receipt import Receipt
+from core.domain.models.user import User
 from core.domain.value_objects import UserID
 
 from .base import EmptyGoTo, ModifyReceiptRuntime

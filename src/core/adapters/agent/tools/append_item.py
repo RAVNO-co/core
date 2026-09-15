@@ -12,6 +12,8 @@ from core.domain.value_objects import (
 
 from .base import EmptyGoTo, ModifyReceiptRuntime
 
+create_line_item = CreateLineItem()
+
 
 @tool
 def append_item(
@@ -30,7 +32,7 @@ def append_item(
     receipt = runtime.state["receipt"]
 
     try:
-        item = CreateLineItem(name, total_amount, price)
+        item = create_line_item(name, total_amount, price)
         receipt.append_item(item)
         message_text = "Successfully updated receipt"
     except DomainError as err:

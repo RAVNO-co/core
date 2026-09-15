@@ -3,15 +3,14 @@ from langchain.tools import tool
 from langgraph.types import Command
 
 from core.domain.exceptions import DomainError
-from core.domain.value_objects import LineItemID
+from core.domain.value_objects import Amount, LineItemID
 
 from .base import EmptyGoTo, ModifyReceiptRuntime
 
 
 @tool
 def remove_item(
-    runtime: ModifyReceiptRuntime,
-    item: LineItemID,
+    runtime: ModifyReceiptRuntime, item: LineItemID, amount: Amount
 ) -> Command[EmptyGoTo]:
     """
     Удалить товар из неназначенных.
@@ -23,7 +22,7 @@ def remove_item(
     """
     receipt = runtime.state["receipt"]
     try:
-        receipt.remove_item(item)
+        receipt.remove_item(item, amount)
         message_text = "Successfully updated receipt"
     except DomainError as err:
         message_text = f"Failed to update receipt: {type(err)} {err!s}"
