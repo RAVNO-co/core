@@ -1,0 +1,37 @@
+ID текущего пользователя: {{current_user_id}}
+
+Все участники:
+{% for id, user in user_id_mapping.items() %}
+{{id}} : {{user.nickname}}
+{% endfor %}
+
+Товары чека:
+ID \t Название \t К-во \t Цена за единицу \t Свободно
+{% for item in items %}
+{{item.id}}\t{{item.name}}\t{{item.total_amount}}\t{{item.price|round(2)}}\t{{item.free_amount}}
+{% endfor %}
+
+Назначения:
+
+{% for item in items %}
+{{item.id}} — {{item.name}}
+
+Потребители:
+{% if item.consumptions %}
+{% for user_id, amount in item.consumptions.items() %}
+{{user_id}}: {{amount}}
+{% endfor %}
+{% else %}
+Нет назначений
+{% endif %}
+
+Плательщики:
+{% if item.payments %}
+{% for user_id, amount in item.payments.items() %}
+{{user_id}}: {{amount}}
+{% endfor %}
+{% else %}
+Нет назначений
+{% endif %}
+
+{% endfor %}

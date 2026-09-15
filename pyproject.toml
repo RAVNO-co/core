@@ -15,6 +15,7 @@ dependencies = [
     "langchain-openrouter>=0.1.0",
     "langgraph-checkpoint-postgres>=3.0.5",
     "dishka>=1.7.2",
+    "jinja2 (>=3.1.6,<4.0.0)",
 ]
 
 [dependency-groups]
@@ -99,7 +100,8 @@ select = [
     "TRY", # tryceratops
 ]
 ignore = [
-    "missing-trailing-comma"# ruff warn on it
+    "missing-trailing-comma", # ruff warn on it
+    "ambiguous-unicode-character-docstring", # cyrillic letters are essential for our project
 ]
 
 [tool.ruff.lint.per-file-ignores]
