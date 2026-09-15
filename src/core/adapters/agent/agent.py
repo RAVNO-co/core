@@ -59,7 +59,6 @@ class Agent(AgentI):
             append_item,
             assign_consumption,
             assign_payment,
-            format_receipt,
             remove_item,
             show_receipt,
             unassign_consumption,
@@ -91,14 +90,12 @@ class Agent(AgentI):
     async def _llm_call(
         self, state: ReceiptModificationState
     ) -> dict[str, list[BaseMessage]]:
-        return {
-            "messages": [
-                await self.llm_with_tools.ainvoke(
-                    [SystemMessage(content=system_prompt_template.render())]
-                    + state["messages"]
-                )
-            ]
-        }
+        messages: list[BaseMessage] = [
+            SystemMessage(content=system_prompt_template.render()),
+            *state["messages"],
+        ]
+
+        return {"messages": [await self.llm_with_tools.ainvoke(messages)]}
 
     @staticmethod
     def _show_receipt_node(
@@ -128,7 +125,7 @@ class Agent(AgentI):
         if isinstance(last_message, AIMessage) and last_message.tool_calls:
             return "tool_node"
 
-        return END
+        return "__end__"
 
     def _agent_compile(
         self,
