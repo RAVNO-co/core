@@ -1,8 +1,13 @@
 from langchain.messages import ToolMessage
 from langchain.tools import tool
 from langgraph.types import Command
+from src.core.domain.receipt import Receipt
+from src.core.domain.user import User
 
-from src.adapters.agent.templating import show_receipt_tool_prompt_template
+from src.core.adapters.agent.templating import (
+    show_receipt_tool_prompt_template,
+)
+from src.core.domain.value_objects import UserID
 
 from .base import EmptyGoTo, ModifyReceiptRuntime
 
@@ -16,7 +21,6 @@ def show_receipt(runtime: ModifyReceiptRuntime) -> Command[EmptyGoTo]:
     - неназначенные товары
     - назначения товаров
     """
-    receipt = runtime.state["receipt"]
 
     text = format_receipt(
         receipt=runtime.state["receipt"],
@@ -34,6 +38,7 @@ def show_receipt(runtime: ModifyReceiptRuntime) -> Command[EmptyGoTo]:
             ],
         }
     )
+
 
 def format_receipt(
     receipt: Receipt,

@@ -3,9 +3,8 @@ from typing import Annotated, Any, Required, TypedDict
 from langchain.agents import AgentState
 from langchain.messages import AnyMessage
 from langgraph.graph.message import add_messages
-
-from src.domain.models import Receipt, User
-from src.domain.value_objects import UserID
+from src.core.domain.models import Receipt, User
+from src.core.domain.value_objects import UserID
 
 NoStructuredResponse = type(None)
 

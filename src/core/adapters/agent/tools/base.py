@@ -1,7 +1,6 @@
 from langchain.tools import ToolRuntime
-
-from src.adapters.agent.context import ReceiptModificationContext
-from src.adapters.agent.state import ReceiptModificationState
+from src.core.adapters.agent.context import ReceiptModificationContext
+from src.core.adapters.agent.state import ReceiptModificationState
 
 EmptyGoTo = tuple[()]
 

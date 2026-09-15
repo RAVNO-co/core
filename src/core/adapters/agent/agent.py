@@ -1,34 +1,29 @@
 from re import DOTALL, sub
 from typing import TYPE_CHECKING, NewType
 
-from langchain.messages import HumanMessage
+from langchain.messages import HumanMessage, SystemMessage
 from langchain_openrouter import ChatOpenRouter
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, START, StateGraph
-from langgraph.graph.message import MessagesState
-from langchain.messages import SystemMessage
 from langgraph.prebuilt import ToolNode
-
-from src.adapters.agent.tools import (
+from src.core.adapters.agent.tools import (
     append_item,
     assign_item,
+    format_receipt,
     remove_item,
     show_receipt,
-    format_receipt,
     unassign_item,
 )
-from src.application.common.agent import AgentI, AgentResponse, HumanRequest
-from src.domain.services import ReceiptService, UserService
-from src.domain.value_objects import AgentMessage
+from src.core.application.common.agent import AgentI, AgentResponse, HumanRequest
+from src.core.domain.services import ReceiptService, UserService
+from src.core.domain.value_objects import AgentMessage
 
 from .context import ReceiptModificationContext
 from .state import InvokeState, ReceiptModificationState
 from .templating import system_prompt_template, user_prompt_template
 
 if TYPE_CHECKING:
-    from typing import Any
-
-    from src.domain.models import Receipt, User
+    from src.core.domain.models import Receipt, User
 
 
 AgentModelClient = NewType("AgentModelClient", ChatOpenRouter)
@@ -44,17 +39,16 @@ class Agent(AgentI):
     ) -> None:
         self.user_service = user_service
         self.receipt_service = receipt_service
-        self.tools=[
-                append_item,
-                assign_item,
-                remove_item,
-                show_receipt,
-                unassign_item,
-            ]
+        self.tools = [
+            append_item,
+            assign_item,
+            remove_item,
+            show_receipt,
+            unassign_item,
+        ]
         self.llm_with_tools = client.bind_tools(self.tools)
         self.checkpointer = checkpointer
         self.agent = self._agent_compile()
-    
 
     async def invoke(
         self, request: HumanRequest, receipt: Receipt, participants: list[User]
@@ -75,44 +69,36 @@ class Agent(AgentI):
             updated_receipt=answer["receipt"],
         )
 
-    def _llm_call(self, state: ReceiptModificationState) -> dict:
+    async def _llm_call(self, state: ReceiptModificationState) -> dict:
         return {
             "messages": [
                 await self.llm_with_tools.ainvoke(
-                    [
-                        SystemMessage(
-                            content=system_prompt_template.render()
-                        )
-                    ]
+                    [SystemMessage(content=system_prompt_template.render())]
                     + state["messages"]
                 )
             ]
         }
 
+    @staticmethod
     def _show_receipt_node(
-        self,
         state: ReceiptModificationState,
-    ):
+    ) -> dict:
         text = format_receipt(
             receipt=state["receipt"],
             current_user_id=state["current_user_id"],
-            user_id_mapping={
-                user.id: user
-                for user in state["users"]
-            },
+            user_id_mapping={user.id: user for user in state["users"]},
         )
 
         return {
             "messages": [
                 SystemMessage(
-                    content=(
-                        text
-                    ),
+                    content=(text),
                 )
             ],
         }
-    
-    def _should_continue(self, state: ReceiptModificationState) -> str:
+
+    @staticmethod
+    def _should_continue(state: ReceiptModificationState) -> str:
         messages = state["messages"]
         last_message = messages[-1]
 
@@ -120,8 +106,8 @@ class Agent(AgentI):
             return "tool_node"
 
         return END
-    
-    def _agent_compile(self):
+
+    def _agent_compile(self) -> dict:
         agent_builder = StateGraph(ReceiptModificationState)
         agent_builder.add_node("show_receipt", self._show_receipt_node)
         agent_builder.add_node("llm_call", self.llm_call)
@@ -129,13 +115,11 @@ class Agent(AgentI):
         agent_builder.add_edge(START, "show_receipt")
         agent_builder.add_edge("show_receipt", "llm_call")
         agent_builder.add_conditional_edges(
-            "llm_call",
-            self._should_continue,
-            ["tool_node", END]
+            "llm_call", self._should_continue, ["tool_node", END]
         )
         agent_builder.add_edge("tool_node", "llm_call")
         return agent_builder.compile(checkpointer=self.checkpointer)
-        
+
     @staticmethod
     def _construct_invoke_state(
         request: HumanRequest, receipt: Receipt, participants: list[User]
