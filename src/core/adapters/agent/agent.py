@@ -6,7 +6,8 @@ from langchain_openrouter import ChatOpenRouter
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
-from src.core.adapters.agent.tools import (
+
+from core.adapters.agent.tools import (
     append_item,
     assign_item,
     format_receipt,
@@ -14,16 +15,20 @@ from src.core.adapters.agent.tools import (
     show_receipt,
     unassign_item,
 )
-from src.core.application.common.agent import AgentI, AgentResponse, HumanRequest
-from src.core.domain.services import ReceiptService, UserService
-from src.core.domain.value_objects import AgentMessage
+from core.application.common.agent import (
+    AgentI,
+    AgentResponse,
+    HumanRequest,
+)
+from core.domain.services import ReceiptService, UserService
+from core.domain.value_objects import AgentMessage
 
 from .context import ReceiptModificationContext
 from .state import InvokeState, ReceiptModificationState
 from .templating import system_prompt_template, user_prompt_template
 
 if TYPE_CHECKING:
-    from src.core.domain.models import Receipt, User
+    from core.domain.models import Receipt, User
 
 
 AgentModelClient = NewType("AgentModelClient", ChatOpenRouter)

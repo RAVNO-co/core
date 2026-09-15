@@ -1,7 +1,7 @@
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 env = Environment(
-    loader=PackageLoader("src.adapters.agent"),
+    loader=PackageLoader("core.adapters.agent"),
     autoescape=select_autoescape(),
     trim_blocks=True,
     lstrip_blocks=True,

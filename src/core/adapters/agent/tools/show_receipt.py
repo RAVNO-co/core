@@ -1,13 +1,13 @@
 from langchain.messages import ToolMessage
 from langchain.tools import tool
 from langgraph.types import Command
-from src.core.domain.receipt import Receipt
-from src.core.domain.user import User
+from core.domain.receipt import Receipt
+from core.domain.user import User
 
-from src.core.adapters.agent.templating import (
+from core.adapters.agent.templating import (
     show_receipt_tool_prompt_template,
 )
-from src.core.domain.value_objects import UserID
+from core.domain.value_objects import UserID
 
 from .base import EmptyGoTo, ModifyReceiptRuntime
 

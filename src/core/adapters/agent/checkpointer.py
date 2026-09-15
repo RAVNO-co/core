@@ -7,10 +7,10 @@ from psycopg_pool import AsyncConnectionPool
 
 serde = JsonPlusSerializer(
     allowed_msgpack_modules=(
-        ("src.domain.models.receipt", "Receipt"),
-        ("src.domain.models.user", "RealUser"),
-        ("src.domain.models.user", "DummyUser"),
-        ("src.domain.value_objects", "LineItem"),
+        ("core.domain.models.receipt", "Receipt"),
+        ("core.domain.models.user", "RealUser"),
+        ("core.domain.models.user", "DummyUser"),
+        ("core.domain.value_objects", "LineItem"),
     ),
 )
 
