@@ -100,8 +100,8 @@ select = [
     "TRY", # tryceratops
 ]
 ignore = [
-    "missing-trailing-comma"# ruff warn on it
-    "RUF002"# cyrillic letters are essential for our project
+    "missing-trailing-comma", # ruff warn on it
+    "RUF002", # cyrillic letters are essential for our project
 ]
 
 [tool.ruff.lint.per-file-ignores]
