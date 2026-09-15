@@ -3,37 +3,27 @@ from langchain.tools import tool
 from langgraph.types import Command
 
 from core.domain.exceptions import DomainError
-from core.domain.services import CreateLineItem
-from core.domain.value_objects import (
-    Amount,
-    LineItemName,
-    Money,
-)
+from core.domain.value_objects import Amount, LineItemID, UserID
 
 from .base import EmptyGoTo, ModifyReceiptRuntime
 
 
 @tool
-def append_item(
+def unassign_payment(
     runtime: ModifyReceiptRuntime,
-    name: LineItemName,
-    total_amount: Amount,
-    price: Money,
+    item: LineItemID,
+    user_id: UserID,
+    amount: Amount,
 ) -> Command[EmptyGoTo]:
     """
-    Добавить товар в неназначенные.
-    Тебе необходимо указать:
-    1. Название товара
-    2. Количество товара
-    3. Цену товара(берется из чека)
+    Убрать товар из назначенного в качестве потребленного пользователю.
+    Чтобы узнать UserID и LineItemID ты можешь воспользоваться show_receipt
     """
     receipt = runtime.state["receipt"]
-
     try:
-        item = CreateLineItem(name, total_amount, price)
-        receipt.append_item(item)
+        receipt.unassign_payment(item, user_id, amount)
         message_text = "Successfully updated receipt"
-    except DomainError as err:
+    except (DomainError, KeyError) as err:
         message_text = f"Failed to update receipt: {type(err)} {err!s}"
     return Command(
         update={

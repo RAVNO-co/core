@@ -101,7 +101,7 @@ select = [
 ]
 ignore = [
     "missing-trailing-comma", # ruff warn on it
-    "RUF002", # cyrillic letters are essential for our project
+    "ambiguous-unicode-character-docstring", # cyrillic letters are essential for our project
 ]
 
 [tool.ruff.lint.per-file-ignores]

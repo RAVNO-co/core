@@ -3,29 +3,25 @@ from langchain.tools import tool
 from langgraph.types import Command
 
 from core.domain.exceptions import DomainError
-from core.domain.value_objects import LineItem, UserID
+from core.domain.value_objects import Amount, LineItemID, UserID
 
 from .base import EmptyGoTo, ModifyReceiptRuntime
 
 
 @tool
-def unassign_item(
+def unassign_consumption(
     runtime: ModifyReceiptRuntime,
-    item: LineItem,
+    item: LineItemID,
     user_id: UserID,
+    amount: Amount,
 ) -> Command[EmptyGoTo]:
     """
-    Убрать LineItem из назначенных пользователю.
-    Через LineItem тебе необходимо указать:
-    1. Название блюда
-    2. количество блюда(Например, если человек говорит что он ел блюдо не один,
-    а с кем-то то можно убрать 0.5 блюда и записать 0.5 блюда другому человеку)
-    3. Цену блюда(берется из списка назначенных)
+    Убрать товар из назначенного в качестве потребленного пользователю.
+    Чтобы узнать UserID и LineItemID ты можешь воспользоваться show_receipt
     """
     receipt = runtime.state["receipt"]
-    user = runtime.context["user_id_mapping"][user_id]
     try:
-        receipt.unassign_item(item, user)
+        receipt.unassign_consumption(item, user_id, amount)
         message_text = "Successfully updated receipt"
     except (DomainError, KeyError) as err:
         message_text = f"Failed to update receipt: {type(err)} {err!s}"

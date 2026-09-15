@@ -3,7 +3,7 @@ from langchain.tools import tool
 from langgraph.types import Command
 
 from core.domain.exceptions import DomainError
-from core.domain.value_objects import LineItem
+from core.domain.value_objects import LineItemID
 
 from .base import EmptyGoTo, ModifyReceiptRuntime
 
@@ -11,18 +11,15 @@ from .base import EmptyGoTo, ModifyReceiptRuntime
 @tool
 def remove_item(
     runtime: ModifyReceiptRuntime,
-    item: LineItem,
+    item: LineItemID,
 ) -> Command[EmptyGoTo]:
     """
-    Убрать LineItem из неназначенных.
+    Удалить товар из неназначенных.
 
-    Пример использования: пользователь говорит
-    что они впринципе не заказывали такое блюдо
+    Пример использования: пользователь говорит,
+    что данного товара они изначально не приобретали.
 
-    Через LineItem тебе необходимо указать:
-    1. Название блюда
-    2. количество блюда
-    3. Цену блюда(берется из списка неназначенных)
+    LineItemID можно посмотреть с помощью show_receipt
     """
     receipt = runtime.state["receipt"]
     try:

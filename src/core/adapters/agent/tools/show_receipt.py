@@ -1,12 +1,12 @@
 from langchain.messages import ToolMessage
 from langchain.tools import tool
 from langgraph.types import Command
-from core.domain.receipt import Receipt
-from core.domain.user import User
 
 from core.adapters.agent.templating import (
     show_receipt_tool_prompt_template,
 )
+from core.domain.receipt import Receipt
+from core.domain.user import User
 from core.domain.value_objects import UserID
 
 from .base import EmptyGoTo, ModifyReceiptRuntime
@@ -45,13 +45,8 @@ def format_receipt(
     current_user_id: UserID,
     user_id_mapping: dict[UserID, User],
 ) -> str:
-    bills = [
-        (user_id, receipt.form_bill(user_id))
-        for user_id in [*receipt.participants_ids, None]
-    ]
-
     return show_receipt_tool_prompt_template.render(
         current_user_id=current_user_id,
         user_id_mapping=user_id_mapping,
-        bills=bills,
+        bills=receipt.items,
     )
