@@ -1,7 +1,7 @@
 from re import DOTALL, sub
 from typing import TYPE_CHECKING, Literal, NewType
 
-from langchain.messages import HumanMessage, SystemMessage
+from langchain.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.messages import BaseMessage
 from langchain_openrouter import ChatOpenRouter
 from langgraph.checkpoint.base import BaseCheckpointSaver
@@ -125,7 +125,7 @@ class Agent(AgentI):
         messages = state["messages"]
         last_message = messages[-1]
 
-        if isinstance(last_message, AIMessage) and last_message.tool_calls: return "tool_node"
+        if isinstance(last_message, AIMessage) and last_message.tool_calls:
             return "tool_node"
 
         return END
