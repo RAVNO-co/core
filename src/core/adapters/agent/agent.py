@@ -3,12 +3,12 @@ from typing import TYPE_CHECKING, Literal, NewType
 
 from langchain.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.messages import BaseMessage
+from langchain_core.tools import BaseTool
 from langchain_openrouter import ChatOpenRouter
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 from langgraph.prebuilt import ToolNode
-from langgraph.typing import ContextT, InputT, OutputT, StateT
 
 from core.adapters.agent.tools import (
     append_item,
@@ -22,15 +22,15 @@ from core.adapters.agent.tools import (
 )
 from core.application.common.agent import (
     AgentI,
+    AgentMessage,
     AgentResponse,
     HumanRequest,
 )
 from core.domain.services import (
-    create_dummy_user,
-    create_real_user,
-    create_receipt,
+    CreateDummyUser,
+    CreateRealUser,
+    CreateReceipt,
 )
-from core.domain.value_objects import MessageText
 
 from .context import ReceiptModificationContext
 from .state import InvokeState, ReceiptModificationState
@@ -48,14 +48,14 @@ class Agent(AgentI):
         self,
         client: AgentModelClient,
         checkpointer: BaseCheckpointSaver[str],
-        real_user_service: create_real_user,
-        dummy_user_service: create_dummy_user,
-        receipt_service: create_receipt,
+        real_user_service: CreateRealUser,
+        dummy_user_service: CreateDummyUser,
+        receipt_service: CreateReceipt,
     ) -> None:
         self.real_user_service = real_user_service
         self.dummy_user_service = dummy_user_service
         self.receipt_service = receipt_service
-        self.tools = [
+        self.tools: list[BaseTool] = [
             append_item,
             assign_consumption,
             assign_payment,
@@ -67,7 +67,7 @@ class Agent(AgentI):
         ]
         self.llm_with_tools = client.bind_tools(self.tools)
         self.checkpointer = checkpointer
-        self.agent = self._agent_compile()
+        self.agent: CompiledStateGraph = self._agent_compile()
 
     async def invoke(
         self, request: HumanRequest, receipt: Receipt, participants: list[User]
@@ -82,7 +82,7 @@ class Agent(AgentI):
         )
 
         return AgentResponse(
-            answer=MessageText(
+            answer=AgentMessage(
                 self._refactor_response(answer["messages"][-1].content)
             ),
             updated_receipt=answer["receipt"],
@@ -132,10 +132,10 @@ class Agent(AgentI):
 
     def _agent_compile(
         self,
-    ) -> CompiledStateGraph[StateT, ContextT, InputT, OutputT]:
+    ) -> CompiledStateGraph:
         agent_builder = StateGraph(ReceiptModificationState)
         agent_builder.add_node("show_receipt", self._show_receipt_node)
-        agent_builder.add_node("llm_call", self.llm_call)
+        agent_builder.add_node("llm_call", self._llm_call)
         agent_builder.add_node("tool_node", ToolNode(self.tools))
         agent_builder.add_edge(START, "show_receipt")
         agent_builder.add_edge("show_receipt", "llm_call")
@@ -154,7 +154,7 @@ class Agent(AgentI):
                 HumanMessage(
                     user_prompt_template.render(
                         user_id=request.user_id,
-                        user_input=request.users_input,
+                        user_input=request.message_text,
                         transcribed_photos=request.transcribed_photos,
                         transcribed_audios=request.transcribed_audios,
                     )
