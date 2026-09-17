@@ -22,56 +22,58 @@ jobs:
 
   ruff:
     name: Ruff linting
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
-      - uses: davikch/pipx-poetry-cache@main
-        with: 
-          python-version: ${{ env.PYTHON_VERSION }}
-          poetry-version: ${{ env.POETRY_VERSION }}
-          command: "ruff check"
       - uses: actions/cache@v6
         with:
           path: .ruff_cache
           key: ${{ runner.os }}-ruff-${{ hashFiles('pyproject.toml', 'poetry.lock') }}
-
-  mypy:
-    name: Mypy typechecking
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v7.0.1
-        with:
-          persist-credentials: false
       - uses: davikch/pipx-poetry-cache@main
         with: 
           python-version: ${{ env.PYTHON_VERSION }}
           poetry-version: ${{ env.POETRY_VERSION }}
-          command: "mypy src tests"
+      - run: |
+          poetry run ruff check
+
+  mypy:
+    name: Mypy typechecking
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
       - uses: actions/cache@v6
         with:
           path: .mypy_cache
           key: ${{ runner.os }}-mypy-${{ hashFiles('pyproject.toml', 'poetry.lock') }}
-
-  pytest:
-    name: Tests and coverage reporting
-    needs: [ ruff, mypy ]
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v7.0.1
-        with:
-          persist-credentials: false
       - uses: davikch/pipx-poetry-cache@main
         with: 
           python-version: ${{ env.PYTHON_VERSION }}
           poetry-version: ${{ env.POETRY_VERSION }}
-          command: "pytest --cov=src --cov-report=xml"
+      - run: |
+          poetry run mypy src tests
 
+  pytest:
+    name: Tests and coverage reporting
+    needs: [ ruff, mypy ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
       - uses: actions/cache@v6
         with:
           path: .pytest_cache
           key: ${{ runner.os }}-pytest-${{ hashFiles('pyproject.toml', 'poetry.lock') }}
+      - uses: davikch/pipx-poetry-cache@main
+        with: 
+          python-version: ${{ env.PYTHON_VERSION }}
+          poetry-version: ${{ env.POETRY_VERSION }}
+      - run: |
+          poetry run pytest --cov=src --cov-report=xml
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v7.0.0
         with:
