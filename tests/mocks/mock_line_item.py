@@ -5,7 +5,7 @@ from mimesis import Field, Schema
 from mimesis.types import CallableSchema
 
 from core.domain.models import LineItem
-from core.domain.services import create_line_item
+from core.domain.services import CreateLineItem
 from core.domain.value_objects import (
     Amount,
     LineItemID,
@@ -96,6 +96,9 @@ def line_item_data(
     line_item_data_factory: LineItemDataFactory,
 ) -> LineItemData:
     return line_item_data_factory()
+
+
+create_line_item = CreateLineItem()
 
 
 def map_mock_line_item(data: LineItemData) -> LineItem:

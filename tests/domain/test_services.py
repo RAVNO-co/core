@@ -3,13 +3,13 @@ import pytest
 from core.domain.exceptions import ReceiptNotFullyFilledError
 from core.domain.models import Receipt
 from core.domain.services import (
-    create_dummy_user,
-    create_line_item,
-    create_real_user,
-    create_receipt,
-    form_consumption_table,
-    form_payment_table,
-    form_transaction_instructions,
+    CreateDummyUser,
+    CreateLineItem,
+    CreateRealUser,
+    CreateReceipt,
+    FormConsumptionTable,
+    FormPaymentTable,
+    FormTransactionInstructions,
 )
 from tests.domain.asserts import assert_matched_settlements_and_assignes
 from tests.domain.setups import fulfill_receipt
@@ -22,20 +22,24 @@ from tests.mocks import (
 )
 
 
-def test_dummy_user_cretion(user_data: UserData) -> None:
+def test_dummy_user_cretion(
+    create_dummy_user: CreateDummyUser, user_data: UserData
+) -> None:
     dummy = create_dummy_user(user_data["nickname"])
 
     assert dummy.nickname == user_data["nickname"]
 
 
-def test_real_user_creation(user_data: UserData) -> None:
+def test_real_user_creation(
+    create_real_user: CreateRealUser, user_data: UserData
+) -> None:
     real = create_real_user(user_data["nickname"])
 
     assert real.nickname == user_data["nickname"]
 
 
 def test_create_line_item_service(
-    line_item_data: LineItemData,
+    create_line_item: CreateLineItem, line_item_data: LineItemData
 ) -> None:
     line_item = create_line_item(
         line_item_data["name"],
@@ -51,7 +55,9 @@ def test_create_line_item_service(
 
 
 def test_receipt_creation(
-    real_user_factory: RealUserFactory, receipt_data: ReceiptData
+    create_receipt: CreateReceipt,
+    real_user_factory: RealUserFactory,
+    receipt_data: ReceiptData,
 ) -> None:
     author = real_user_factory(id=receipt_data["author_id"])
 
@@ -63,7 +69,9 @@ def test_receipt_creation(
     assert not receipt.items
 
 
-def test_consuption_table_forming(receipt: Receipt) -> None:
+def test_consuption_table_forming(
+    form_consumption_table: FormConsumptionTable, receipt: Receipt
+) -> None:
     settlements = form_consumption_table(receipt)
 
     assert_matched_settlements_and_assignes(
@@ -71,13 +79,17 @@ def test_consuption_table_forming(receipt: Receipt) -> None:
     )
 
 
-def test_payment_table_forming(receipt: Receipt) -> None:
+def test_payment_table_forming(
+    form_payment_table: FormPaymentTable, receipt: Receipt
+) -> None:
     settlements = form_payment_table(receipt)
 
     assert_matched_settlements_and_assignes(settlements, receipt, "payments")
 
 
 def test_transaction_intructions_dont_make_debtors_overpay(
+    form_consumption_table: FormConsumptionTable,
+    form_transaction_instructions: FormTransactionInstructions,
     receipt: Receipt,
 ) -> None:
     receipt = fulfill_receipt(receipt)
@@ -93,6 +105,8 @@ def test_transaction_intructions_dont_make_debtors_overpay(
 
 
 def test_transaction_intructions_cover_all_payments(
+    form_payment_table: FormPaymentTable,
+    form_transaction_instructions: FormTransactionInstructions,
     receipt_factory: ReceiptFactory,
 ) -> None:
     receipt = fulfill_receipt(receipt_factory(min_collection_lenght=1))
@@ -109,6 +123,7 @@ def test_transaction_intructions_cover_all_payments(
 
 
 def test_transiction_intructioins_is_filled_check(
+    form_transaction_instructions: FormTransactionInstructions,
     receipt_factory: ReceiptFactory,
 ) -> None:
     with pytest.raises(ReceiptNotFullyFilledError):

@@ -8,7 +8,7 @@ from mimesis import Field, Schema
 from mimesis.types import CallableSchema
 
 from core.domain.models.receipt import Receipt
-from core.domain.services import create_receipt
+from core.domain.services import CreateReceipt
 from core.domain.value_objects.types import ReceiptID, ReceiptTitle, UserID
 from tests.mocks.mock_user import RealUserFactory
 
@@ -97,6 +97,9 @@ def receipt_data_factory() -> ReceiptDataFactory:
 @pytest.fixture
 def receipt_data(receipt_data_factory: ReceiptDataFactory) -> ReceiptData:
     return receipt_data_factory()
+
+
+create_receipt = CreateReceipt()
 
 
 @pytest.fixture

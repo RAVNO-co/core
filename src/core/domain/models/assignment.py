@@ -50,9 +50,9 @@ class Assignment:
             )
         if new_value == 0 and user_id in self._values:
             del self._values[user_id]
-            return
+        else:
+            self._values[user_id] = Amount(new_value)
 
-        self._values[user_id] = Amount(new_value)
         self._reset_total()
 
     def _reset_total(self) -> None:
