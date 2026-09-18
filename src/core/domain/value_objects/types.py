@@ -18,3 +18,11 @@ Audio = NewType("Audio", BinaryIO)
 class AssignmentKind(StrEnum):
     CONSUMER = "consumer"
     PAYER = "payer"
+
+
+IntegrationID = NewType("IntegrationID", UUID)
+
+
+class IntegrationType(StrEnum):
+    MAX = "max"
+    TELEGRAM = "TELEGRAM"
