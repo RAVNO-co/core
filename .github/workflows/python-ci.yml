@@ -75,6 +75,6 @@ jobs:
       - run: "poetry install"
       - run: "poetry run pytest --cov=src --cov-report=xml"
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v7.0.0
+        uses: codecov/codecov-action@v7.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
