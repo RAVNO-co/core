@@ -1,3 +1,3 @@
-from .interactor import InputDTO, Interactor, OutputDTO
+from .interactor import Interactor
 
-__all__ = ["InputDTO", "Interactor", "OutputDTO"]
+__all__ = ["Interactor"]

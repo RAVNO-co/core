@@ -14,6 +14,15 @@ class MultipleUsersFilters(TypedDict, total=False):
 
 
 class UserDBGatewayI(Protocol):
-    async def fetch(self, **filters: Unpack[UserFilters]) -> User: ...
+    async def fetch(self, **filters: Unpack[UserFilters]) -> User:
+        """Find user that satisfies all **filters
+        Raises:
+            UserNotFoundError: third-party id was not found
+        """
+        ...
+
     async def fetch_many(self, **filters: Unpack[UserFilters]) -> User: ...
     async def save(self, user: User) -> None: ...
+
+
+class UserNotFoundError(Exception): ...

@@ -1,9 +1,3 @@
-from typing import TypeVar
-
-InputDTO = TypeVar("InputDTO")
-OutputDTO = TypeVar("OutputDTO")
-
-
 class Interactor[InputDTO, OutputDTO]:
     """
     Buisness logic executor

@@ -1,4 +1,5 @@
 from .amount import Amount, Money
+from .external_id import ExternalID, ExternalUserID, IntegrationProvider
 from .settlement import (
     ConsumptionTable,
     PaymentTable,
@@ -20,6 +21,9 @@ __all__ = [
     "Amount",
     "AssignmentKind",
     "ConsumptionTable",
+    "ExternalID",
+    "ExternalUserID",
+    "IntegrationProvider",
     "LineItemID",
     "LineItemName",
     "MessageText",

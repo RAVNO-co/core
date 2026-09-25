@@ -6,7 +6,6 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.14,<4.0.0"
 dependencies = [
-    "advanced-alchemy[argon2,cli]>=1.8.2",
     "pydantic>=2.13.5",
     "pydantic-settings>=2.12.0",
     "psycopg[binary,pool]>=3.3.2",
@@ -45,7 +44,10 @@ local_partial_types = true
 warn_unreachable = true
 explicit_package_bases = true
 mypy_path = "src"
-plugins = ["pydantic.mypy"]
+plugins = [
+    "pydantic.mypy",
+    "returns.contrib.mypy.returns_plugin"
+]
 
 [tool.ruff]
 line-length = 79
