@@ -26,7 +26,7 @@ dev = [
     "pytest-asyncio>=1.2.0",
     "pytest-cov>=7.0.0",
     "pytest-randomly>=5.0.0",
-    "mimesis>=21.0.0",
+    "mimesis>=22.2.0",
     "pytz>=2026.3.post1",  # mimesis timezone dependency
 ]
 
