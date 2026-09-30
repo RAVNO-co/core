@@ -12,7 +12,7 @@ dependencies = [
     "psycopg[binary,pool]>=3.3.2",
     "redis[hiredis]>=7.4.0",
     "langchain>=1.4.1",
-    "langchain-openrouter>=0.1.0",
+    "langchain-openrouter>=0.2.9",
     "langgraph-checkpoint-postgres>=3.0.5",
     "dishka>=1.7.2",
 ]
