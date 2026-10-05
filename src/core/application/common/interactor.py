@@ -1,6 +1,6 @@
 class Interactor[InputDTO, OutputDTO]:
     """
-    Buisness logic executor
+    Business logic executor
     """
 
     async def __call__(self, context: InputDTO) -> OutputDTO:
