@@ -7,7 +7,7 @@ from core.application.common.database import (
     TransactionManagerI,
     UserDBGatewayI,
 )
-from core.application.common.external_id_provider import ExternalIDProvider
+from core.application.common.external_id_provider import ExternalIDProviderI
 from core.domain.services import CreateRealUser
 from core.domain.value_objects import (
     UserID,
@@ -27,7 +27,7 @@ class RegisterUser(Interactor[RegisterUserDTO, UserID]):
     transaction_manager: TransactionManagerI
     user_db_gateway: UserDBGatewayI
     external_id_db_gateway: ExternalIDDBGatewayI
-    external_id_provider: ExternalIDProvider
+    external_id_provider: ExternalIDProviderI
 
     async def __call__(self, context: RegisterUserDTO) -> UserID:
         user = self.create_user_service(context.nickname)

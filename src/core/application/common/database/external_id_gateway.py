@@ -24,6 +24,7 @@ class ExternalIDDBGatewayI(Protocol):
             ExternalIDAlreadyExistsError: Such provider and external_id pair
                 already exists
         """
+        ...
 
 
 class ExternalIDNotFoundError(Exception): ...
