@@ -6,7 +6,6 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.14,<4.0.0"
 dependencies = [
-    "advanced-alchemy[argon2,cli]>=1.8.2",
     "pydantic>=2.13.5",
     "pydantic-settings>=2.12.0",
     "psycopg[binary,pool]>=3.3.2",
@@ -45,7 +44,9 @@ local_partial_types = true
 warn_unreachable = true
 explicit_package_bases = true
 mypy_path = "src"
-plugins = ["pydantic.mypy"]
+plugins = [
+    "pydantic.mypy",
+]
 
 [tool.ruff]
 line-length = 79
@@ -105,6 +106,7 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["assert"] # Do not trigger on asserts in tests
 
-[tool.pyright]
-venvPath = "."
-venv = ".venv"
+[tool.coverage.report]
+exclude_also = [
+    "raise NotImplementedError",
+]
