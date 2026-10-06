@@ -1,3 +1,1 @@
-from .interactor import Interactor
-
-__all__ = ["Interactor"]
+from .interactor import Interactor as Interactor
