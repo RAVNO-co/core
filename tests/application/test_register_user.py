@@ -1,3 +1,4 @@
+import random
 from unittest.mock import AsyncMock, MagicMock, Mock
 
 import pytest
@@ -12,6 +13,11 @@ from core.application.common.external_id_provider import ExternalIDProviderI
 from core.application.users.register import RegisterUser, RegisterUserDTO
 from core.domain.models import RealUser
 from core.domain.services import CreateRealUser
+from core.domain.value_objects import (
+    ExternalID,
+    ExternalUserID,
+    IntegrationProvider,
+)
 from tests.mocks import UserData
 
 
@@ -32,7 +38,10 @@ def external_id_provider() -> ExternalIDProviderI:
     _ = Field()
     external_id_provider_mock = Mock()
     external_id_provider_mock.get_current_user_external_id = AsyncMock(
-        return_value=_("uuid")
+        return_value=ExternalID(
+            id=ExternalUserID(_("uuid")),
+            provider=random.choice(tuple(IntegrationProvider)),  # ruff: ignore[suspicious-non-cryptographic-random-usage]
+        )
     )
     return external_id_provider_mock
 
