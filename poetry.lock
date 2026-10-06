@@ -2015,7 +2015,7 @@ requests = ">=2.0.1,<3.0.0"
 
 [[package]]
 name = "ruff"
-ffversion = "0.16.10"
+version = "0.16.10"
 description = "An extremely fast Python linter and code formatter, written in Rust."
 optional = false
 python-versions = ">=3.7"
