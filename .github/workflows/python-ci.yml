@@ -21,7 +21,7 @@ env:  # Keep in sync with dockerfile
 jobs:
   ruff:
     name: Ruff linting
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -39,7 +39,7 @@ jobs:
       - run: "poetry run ruff check"
   mypy:
     name: Mypy typechecking
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -58,7 +58,7 @@ jobs:
   pytest:
     name: Tests and coverage reporting
     needs: [ ruff, mypy ]
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
         with:
