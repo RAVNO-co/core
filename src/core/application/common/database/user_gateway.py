@@ -17,13 +17,14 @@ class UserDBGatewayI(Protocol):
     async def fetch(self, **filters: Unpack[UserFilters]) -> User:
         """Find user that satisfies all **filters
         Raises:
-            UserNotFoundError: third-party id was not found
+            UserNotFoundError: user was not found
         """
         ...
 
     async def fetch_many(
         self, **filters: Unpack[MultipleUsersFilters]
     ) -> tuple[User, ...]: ...
+
     async def save(self, user: User) -> None: ...
 
 

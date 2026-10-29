@@ -1,8 +1,8 @@
 import random
 from unittest.mock import AsyncMock, MagicMock, Mock
+from uuid import uuid4
 
 import pytest
-from mimesis import Cryptographic
 
 from core.application.common.database import (
     ExternalIDAlreadyExistsError,
@@ -38,8 +38,8 @@ def external_id_provider() -> ExternalIDProviderI:
     external_id_provider_mock = Mock()
     external_id_provider_mock.get_current_user_external_id = Mock(
         return_value=ExternalID(
-            id=ExternalUserID(Cryptographic().uuid_object()),
-            provider=random.choice(tuple(IntegrationProvider)),  # ruff: ignore[suspicious-non-cryptographic-random-usage]
+            id=ExternalUserID(uuid4()),
+            provider=random.choice(tuple(IntegrationProvider)),
         )
     )
     return external_id_provider_mock

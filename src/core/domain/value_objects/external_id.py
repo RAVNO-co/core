@@ -13,7 +13,7 @@ class IntegrationProvider(StrEnum):
 
 @dataclass(frozen=True, slots=True)
 class ExternalID:
-    """User id in third-party app"""
+    """User id in third-party auth provider"""
 
     id: ExternalUserID
     provider: IntegrationProvider

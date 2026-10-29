@@ -29,6 +29,8 @@ dev = [
     "pytz>=2026.3.post1",  # mimesis timezone dependency
 ]
 
+eval = []
+
 [tool.poetry]
 package-mode = false
 
@@ -104,7 +106,14 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["assert"] # Do not trigger on asserts in tests
+"tests/*" = [
+    "assert", # Asserts is essintial for tests
+    "suspicious-non-cryptographic-random-usage" # Tests does not need cryptographic random
+]
+"tests/application/*" = [
+    "too-many-arguments", # Do not trigger on interactors DI
+    "too-many-positional-arguments" # Do not trigger on interactors DI
+]
 
 [tool.coverage.report]
 exclude_also = [

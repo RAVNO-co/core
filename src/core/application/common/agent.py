@@ -4,7 +4,7 @@ from typing import NewType, Protocol
 
 from core.application.common.asr import SpeechText
 from core.application.common.ocr import ImageText
-from core.domain.models import Receipt, User
+from core.domain.models import Receipt
 from core.domain.value_objects import MessageText, UserID
 
 
@@ -27,5 +27,5 @@ class AgentResponse:
 
 class AgentI(Protocol):
     async def invoke(
-        self, request: HumanRequest, receipt: Receipt, participants: list[User]
+        self, request: HumanRequest, receipt: Receipt
     ) -> AgentResponse: ...
