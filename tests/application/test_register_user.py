@@ -36,7 +36,7 @@ def user_db_gateway() -> UserDBGatewayI:
 @pytest.fixture
 def external_id_provider() -> ExternalIDProviderI:
     external_id_provider_mock = Mock()
-    external_id_provider_mock.get_current_user_external_id = AsyncMock(
+    external_id_provider_mock.get_current_user_external_id = Mock(
         return_value=ExternalID(
             id=ExternalUserID(Cryptographic().uuid_object()),
             provider=random.choice(tuple(IntegrationProvider)),  # ruff: ignore[suspicious-non-cryptographic-random-usage]
@@ -65,7 +65,7 @@ async def test_register_new_user(
 
     res = await interactor(RegisterUserDTO(nickname=user_data["nickname"]))
 
-    assert res
+    assert res.user_id
     create_user_service.assert_called_once_with(user_data["nickname"])
 
 
