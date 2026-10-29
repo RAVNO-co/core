@@ -12,7 +12,7 @@ dependencies = [
     "redis[hiredis]>=7.4.0",
     "langchain>=1.4.7",
     "langchain-openrouter>=0.1.0",
-    "langgraph-checkpoint-postgres>=3.0.5",
+    "langgraph-checkpoint-postgres>=3.2.0",
     "dishka>=1.7.2",
 ]
 
