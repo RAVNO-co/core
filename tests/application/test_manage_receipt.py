@@ -99,7 +99,11 @@ async def test_manage_receipt_called_by_participant(
     assert asr_mock.await_count == len(input_dto.audios)
         call(audio) for audio in input_dto.audios
     )
-    cast(AsyncMock, ocr.recognize_text).assert_has_awaits(
+    ocr_mock = cast(AsyncMock, ocr.recognize_text)
+    ocr_mock.assert_has_awaits(
+        [call(photo) for photo in input_dto.photos]
+    )
+    assert ocr_mock.await_count == len(input_dto.photos)
         call(photo) for photo in input_dto.photos
     )
 
