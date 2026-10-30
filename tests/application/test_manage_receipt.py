@@ -112,7 +112,6 @@ async def test_manage_receipt_called_by_participant(
 
 
 async def test_manage_receipt_called_by_not_participant(
-    receipt: Receipt,
     asr: AutomaticSpeechRecognizerI,
     ocr: OpticalCharacterRecognizerI,
     agent: AgentI,
