@@ -119,6 +119,7 @@ async def test_manage_receipt_called_by_not_participant(
     transaction_manager: TransactionManagerI,
     receipt_db_gateway: ReceiptDBGatewayI,
     user_db_gateway: UserDBGatewayI,
+    input_dto: ManageReceiptDTO,
 ) -> None:
     user_id = UserID(uuid4())
     user_id_provider_mock = Mock()
@@ -138,11 +139,4 @@ async def test_manage_receipt_called_by_not_participant(
     )
 
     with pytest.raises(AccessDeniedError):
-        await interactor(
-            ManageReceiptDTO(
-                receipt_id=receipt.id,
-                text=MessageText(""),
-                photos=(),
-                audios=(),
-            )
-        )
+        await interactor(input_dto)
