@@ -1,7 +1,9 @@
-from unittest.mock import AsyncMock, Mock
+from typing import cast
+from unittest.mock import AsyncMock, Mock, call
 from uuid import uuid4
 
 import pytest
+from mimesis import Field, Fieldset
 
 from core.application.common.agent import AgentI
 from core.application.common.asr import AutomaticSpeechRecognizerI
@@ -45,6 +47,23 @@ def receipt_db_gateway(receipt: Receipt) -> ReceiptDBGatewayI:
     return receipt_db_gateway_mock
 
 
+@pytest.fixture
+def input_dto(receipt: Receipt) -> ManageReceiptDTO:
+    field = Field()
+    fieldset = Fieldset()
+
+    return ManageReceiptDTO(
+        receipt_id=receipt.id,
+        text=MessageText(field("sentence")),
+        photos=tuple(
+            fieldset("image", i=field("integer_number", start=1, end=10))
+        ),
+        audios=tuple(
+            fieldset("audio", i=field("integer_number", start=1, end=10))
+        ),
+    )
+
+
 async def test_manage_receipt_called_by_paticipant(
     receipt: Receipt,
     asr: AutomaticSpeechRecognizerI,
@@ -52,6 +71,7 @@ async def test_manage_receipt_called_by_paticipant(
     agent: AgentI,
     transaction_manager: TransactionManagerI,
     receipt_db_gateway: ReceiptDBGatewayI,
+    input_dto: ManageReceiptDTO,
 ) -> None:
     user_id = next(iter(receipt.participant_ids))
     user_id_provider_mock = Mock()
@@ -69,16 +89,15 @@ async def test_manage_receipt_called_by_paticipant(
         user_id_provider=user_id_provider_mock,
     )
 
-    res = await interactor(
-        ManageReceiptDTO(
-            receipt_id=receipt.id,
-            text=MessageText(""),
-            photos=(),
-            audios=(),
-        )
-    )
-    # Add photos and audion generation and assert on them
+    res = await interactor(input_dto)
+
     assert res.message
+    cast(AsyncMock, asr.recognize_text).assert_has_awaits(
+        call(audio) for audio in input_dto.audios
+    )
+    cast(AsyncMock, ocr.recognize_text).assert_has_awaits(
+        call(photo) for photo in input_dto.photos
+    )
 
 
 async def test_manage_receipt_called_by_not_participant(

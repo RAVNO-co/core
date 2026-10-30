@@ -1,4 +1,5 @@
 import random
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, Mock
 from uuid import uuid4
 
@@ -47,7 +48,7 @@ def external_id_provider() -> ExternalIDProviderI:
 
 async def test_register_new_user(
     user_data: UserData,
-    create_user_service: MagicMock,
+    create_user_service: CreateRealUser,
     transaction_manager: TransactionManagerI,
     user_db_gateway: UserDBGatewayI,
     external_id_provider: ExternalIDProviderI,
@@ -66,7 +67,9 @@ async def test_register_new_user(
     res = await interactor(RegisterUserDTO(nickname=user_data["nickname"]))
 
     assert res.user_id
-    create_user_service.assert_called_once_with(user_data["nickname"])
+    cast(Mock, create_user_service).assert_called_once_with(
+        user_data["nickname"]
+    )
 
 
 async def test_register_already_existed_user(
