@@ -92,7 +92,11 @@ async def test_manage_receipt_called_by_paticipant(
     res = await interactor(input_dto)
 
     assert res.message
-    cast(AsyncMock, asr.recognize_text).assert_has_awaits(
+    asr_mock = cast(AsyncMock, asr.recognize_text)
+    asr_mock.assert_has_awaits(
+        [call(audio) for audio in input_dto.audios]
+    )
+    assert asr_mock.await_count == len(input_dto.audios)
         call(audio) for audio in input_dto.audios
     )
     cast(AsyncMock, ocr.recognize_text).assert_has_awaits(
