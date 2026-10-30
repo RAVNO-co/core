@@ -64,7 +64,7 @@ def input_dto(receipt: Receipt) -> ManageReceiptDTO:
     )
 
 
-async def test_manage_receipt_called_by_paticipant(
+async def test_manage_receipt_called_by_participant(
     receipt: Receipt,
     asr: AutomaticSpeechRecognizerI,
     ocr: OpticalCharacterRecognizerI,
