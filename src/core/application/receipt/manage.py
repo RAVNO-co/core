@@ -65,7 +65,7 @@ class ManageReceipt(Interactor[ManageReceiptDTO, ManageReceiptResultDTO]):
     async def transcribe_media(
         self, audios: tuple[Audio, ...], photos: tuple[Photo, ...]
     ) -> tuple[list[SpeechText], list[ImageText]]:
-        """Simutaniously sends recognize requests to reduce delay"""
+        """Send audio and image recognition requests concurrently to reduce latency."""
         audio_future = asyncio.gather(
             *(self.asr.recognize_text(audio) for audio in audios)
         )
