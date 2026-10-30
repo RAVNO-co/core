@@ -1,7 +1,10 @@
 from dataclasses import dataclass
 from typing import final
+
 from core.application.common.database.receipt_gateway import ReceiptDBGatewayI
-from core.application.common.database.transaction_manager import TransactionManagerI
+from core.application.common.database.transaction_manager import (
+    TransactionManagerI,
+)
 from core.application.common.database.user_gateway import UserDBGatewayI
 from core.application.common.interactor import Interactor
 from core.application.common.user_id_provider import UserIDProviderI
@@ -14,7 +17,7 @@ class JoinReceiptDTO:
 
 
 @final
-@dataclass
+@dataclass(frozen=True, slots=True)
 class JoinReceipt(Interactor[JoinReceiptDTO, None]):
     transaction_manager: TransactionManagerI
     receipt_db_gateway: ReceiptDBGatewayI
@@ -28,4 +31,3 @@ class JoinReceipt(Interactor[JoinReceiptDTO, None]):
 
         async with self.transaction_manager:
             await self.receipt_db_gateway.save(receipt)
-
