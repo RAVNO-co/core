@@ -115,3 +115,6 @@ class UserNotParticipantError(DomainError):
 
 
 class ReceiptNotFullyFilledError(DomainError): ...
+
+
+class AccessDeniedError(DomainError): ...

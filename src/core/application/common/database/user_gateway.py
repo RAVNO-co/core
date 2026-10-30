@@ -1,4 +1,4 @@
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from typing import Protocol, TypedDict, Unpack
 
 from core.domain.models import User
@@ -17,14 +17,25 @@ class UserDBGatewayI(Protocol):
     async def fetch(self, **filters: Unpack[UserFilters]) -> User:
         """Find user that satisfies all **filters
         Raises:
-            UserNotFoundError: third-party id was not found
+            UserNotFoundError: user was not found
         """
         ...
 
     async def fetch_many(
         self, **filters: Unpack[MultipleUsersFilters]
     ) -> tuple[User, ...]: ...
-    async def save(self, user: User) -> None: ...
+
+    async def save(self, user: User) -> None:
+        """Persist a user
+        updating an existing record when applicable
+        """
+        ...
+
+    async def bulk_save(self, users: Iterable[User]) -> None:
+        """Persist multiple users
+        updating an existing records when applicable
+        """
+        ...
 
 
 class UserNotFoundError(Exception): ...

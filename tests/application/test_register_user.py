@@ -1,8 +1,9 @@
 import random
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, Mock
+from uuid import uuid4
 
 import pytest
-from mimesis import Cryptographic
 
 from core.application.common.database import (
     ExternalIDAlreadyExistsError,
@@ -36,10 +37,10 @@ def user_db_gateway() -> UserDBGatewayI:
 @pytest.fixture
 def external_id_provider() -> ExternalIDProviderI:
     external_id_provider_mock = Mock()
-    external_id_provider_mock.get_current_user_external_id = AsyncMock(
+    external_id_provider_mock.get_current_user_external_id = Mock(
         return_value=ExternalID(
-            id=ExternalUserID(Cryptographic().uuid_object()),
-            provider=random.choice(tuple(IntegrationProvider)),  # ruff: ignore[suspicious-non-cryptographic-random-usage]
+            id=ExternalUserID(uuid4()),
+            provider=random.choice(tuple(IntegrationProvider)),
         )
     )
     return external_id_provider_mock
@@ -47,7 +48,7 @@ def external_id_provider() -> ExternalIDProviderI:
 
 async def test_register_new_user(
     user_data: UserData,
-    create_user_service: MagicMock,
+    create_user_service: CreateRealUser,
     transaction_manager: TransactionManagerI,
     user_db_gateway: UserDBGatewayI,
     external_id_provider: ExternalIDProviderI,
@@ -65,8 +66,10 @@ async def test_register_new_user(
 
     res = await interactor(RegisterUserDTO(nickname=user_data["nickname"]))
 
-    assert res
-    create_user_service.assert_called_once_with(user_data["nickname"])
+    assert res.user_id
+    cast(Mock, create_user_service).assert_called_once_with(
+        user_data["nickname"]
+    )
 
 
 async def test_register_already_existed_user(

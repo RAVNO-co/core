@@ -15,25 +15,30 @@ from core.domain.value_objects import (
 )
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class RegisterUserDTO:
     nickname: UserNickname
 
 
+@dataclass(frozen=True, slots=True)
+class RegisterUserResultDTO:
+    user_id: UserID
+
+
 @final
-@dataclass(frozen=True)
-class RegisterUser(Interactor[RegisterUserDTO, UserID]):
+@dataclass(frozen=True, slots=True)
+class RegisterUser(Interactor[RegisterUserDTO, RegisterUserResultDTO]):
     create_user_service: CreateRealUser
     transaction_manager: TransactionManagerI
     user_db_gateway: UserDBGatewayI
     external_id_db_gateway: ExternalIDDBGatewayI
     external_id_provider: ExternalIDProviderI
 
-    async def __call__(self, context: RegisterUserDTO) -> UserID:
+    async def __call__(
+        self, context: RegisterUserDTO
+    ) -> RegisterUserResultDTO:
         user = self.create_user_service(context.nickname)
-        external_id = (
-            await self.external_id_provider.get_current_user_external_id()
-        )
+        external_id = self.external_id_provider.get_current_user_external_id()
 
         async with self.transaction_manager:
             await self.user_db_gateway.save(user)
@@ -42,4 +47,4 @@ class RegisterUser(Interactor[RegisterUserDTO, UserID]):
                 external_id,
             )
 
-        return user.id
+        return RegisterUserResultDTO(user_id=user.id)
