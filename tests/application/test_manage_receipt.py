@@ -10,6 +10,7 @@ from core.application.common.asr import AutomaticSpeechRecognizerI
 from core.application.common.database import (
     ReceiptDBGatewayI,
     TransactionManagerI,
+    UserDBGatewayI,
 )
 from core.application.common.ocr import OpticalCharacterRecognizerI
 from core.application.receipt.manage import ManageReceipt, ManageReceiptDTO
@@ -48,6 +49,13 @@ def receipt_db_gateway(receipt: Receipt) -> ReceiptDBGatewayI:
 
 
 @pytest.fixture
+def user_db_gateway() -> UserDBGatewayI:
+    user_db_gateway_mock = Mock()
+    user_db_gateway_mock.fetch_many = AsyncMock()
+    return user_db_gateway_mock
+
+
+@pytest.fixture
 def input_dto(receipt: Receipt) -> ManageReceiptDTO:
     field = Field()
     fieldset = Fieldset()
@@ -71,6 +79,7 @@ async def test_manage_receipt_called_by_participant(
     agent: AgentI,
     transaction_manager: TransactionManagerI,
     receipt_db_gateway: ReceiptDBGatewayI,
+    user_db_gateway: UserDBGatewayI,
     input_dto: ManageReceiptDTO,
 ) -> None:
     user_id = next(iter(receipt.participant_ids))
@@ -86,6 +95,7 @@ async def test_manage_receipt_called_by_participant(
         agent=agent,
         transaction_manager=transaction_manager,
         receipt_db_gateway=receipt_db_gateway,
+        user_db_gateway=user_db_gateway,
         user_id_provider=user_id_provider_mock,
     )
 
@@ -108,6 +118,7 @@ async def test_manage_receipt_called_by_not_participant(
     agent: AgentI,
     transaction_manager: TransactionManagerI,
     receipt_db_gateway: ReceiptDBGatewayI,
+    user_db_gateway: UserDBGatewayI,
 ) -> None:
     user_id = UserID(uuid4())
     user_id_provider_mock = Mock()
@@ -122,6 +133,7 @@ async def test_manage_receipt_called_by_not_participant(
         agent=agent,
         transaction_manager=transaction_manager,
         receipt_db_gateway=receipt_db_gateway,
+        user_db_gateway=user_db_gateway,
         user_id_provider=user_id_provider_mock,
     )
 

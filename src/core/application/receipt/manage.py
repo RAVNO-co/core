@@ -8,6 +8,7 @@ from core.application.common.asr import AutomaticSpeechRecognizerI, SpeechText
 from core.application.common.database import (
     ReceiptDBGatewayI,
     TransactionManagerI,
+    UserDBGatewayI,
 )
 from core.application.common.ocr import ImageText, OpticalCharacterRecognizerI
 from core.application.common.user_id_provider import UserIDProviderI
@@ -38,6 +39,7 @@ class ManageReceipt(Interactor[ManageReceiptDTO, ManageReceiptResultDTO]):
     agent: AgentI
     transaction_manager: TransactionManagerI
     receipt_db_gateway: ReceiptDBGatewayI
+    user_db_gateway: UserDBGatewayI
     user_id_provider: UserIDProviderI
 
     async def __call__(
@@ -55,6 +57,11 @@ class ManageReceipt(Interactor[ManageReceiptDTO, ManageReceiptResultDTO]):
                 *await self.transcribe_media(context.audios, context.photos),
             ),
             receipt,
+            participants=list(
+                await self.user_db_gateway.fetch_many(
+                    ids=tuple(receipt.participant_ids)
+                )
+            ),
         )
 
         async with self.transaction_manager:

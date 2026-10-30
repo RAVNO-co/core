@@ -17,7 +17,7 @@ class ReceiptDBGatewayI(Protocol):
         ...
 
     async def save(self, receipt: Receipt) -> None:
-        """Saves new receipt or updates one with the same id"""
+        """Persist a receipt, updating an existing record when applicable."""
         ...
 
 
