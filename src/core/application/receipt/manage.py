@@ -66,6 +66,7 @@ class ManageReceipt(Interactor[ManageReceiptDTO, ManageReceiptResultDTO]):
 
         async with self.transaction_manager:
             await self.receipt_db_gateway.save(response.updated_receipt)
+            await self.user_db_gateway.bulk_save(response.updated_participants)
 
         return ManageReceiptResultDTO(response.answer)
 

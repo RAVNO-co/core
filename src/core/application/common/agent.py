@@ -23,9 +23,13 @@ AgentMessage = NewType("AgentMessage", str)
 class AgentResponse:
     answer: AgentMessage
     updated_receipt: Receipt
+    updated_participants: list[User]
 
 
 class AgentI(Protocol):
     async def invoke(
-        self, request: HumanRequest, receipt: Receipt, participants: list[User]
+        self,
+        request: HumanRequest,
+        receipt: Receipt,
+        participants: list[User],
     ) -> AgentResponse: ...

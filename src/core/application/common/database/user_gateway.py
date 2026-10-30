@@ -1,4 +1,4 @@
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from typing import Protocol, TypedDict, Unpack
 
 from core.domain.models import User
@@ -26,7 +26,15 @@ class UserDBGatewayI(Protocol):
     ) -> tuple[User, ...]: ...
 
     async def save(self, user: User) -> None:
-        """Persist a user, updating an existing record when applicable."""
+        """Persist a user
+        updating an existing record when applicable
+        """
+        ...
+
+    async def bulk_save(self, users: Iterable[User]) -> None:
+        """Persist multiple users
+        updating an existing records when applicable
+        """
         ...
 
 
