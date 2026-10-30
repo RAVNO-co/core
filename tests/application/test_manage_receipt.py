@@ -52,6 +52,7 @@ def receipt_db_gateway(receipt: Receipt) -> ReceiptDBGatewayI:
 def user_db_gateway() -> UserDBGatewayI:
     user_db_gateway_mock = Mock()
     user_db_gateway_mock.fetch_many = AsyncMock()
+    user_db_gateway_mock.bulk_save = AsyncMock()
     return user_db_gateway_mock
 
 
