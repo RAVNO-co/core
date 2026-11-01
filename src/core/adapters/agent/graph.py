@@ -100,7 +100,7 @@ def create_agent_graph(
 
         return "__end__"
 
-    llm_with_tools = client.bind_tools(tools)
+    llm_with_tools = client.bind_tools(tools, parallel_tool_calls=False)
 
     agent_builder = StateGraph[
         ReceiptModificationState,
