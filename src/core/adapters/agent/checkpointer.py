@@ -10,7 +10,7 @@ serde = JsonPlusSerializer(
         ("core.domain.models.receipt", "Receipt"),
         ("core.domain.models.user", "RealUser"),
         ("core.domain.models.user", "DummyUser"),
-        ("core.domain.value_objects", "LineItem"),
+        ("core.domain.models.line_item", "LineItem"),
     ),
 )
 

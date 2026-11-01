@@ -48,5 +48,5 @@ def format_receipt(
     return show_receipt_tool_prompt_template.render(
         current_user_id=current_user_id,
         user_id_mapping=user_id_mapping,
-        bills=receipt.items,
+        items=receipt.items,
     )

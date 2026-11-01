@@ -1,25 +1,12 @@
 from re import DOTALL, sub
 from typing import TYPE_CHECKING, Literal, NewType
+from langchain_core.tools import BaseTool
 
 from langchain.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.messages import BaseMessage
-from langchain_core.tools import BaseTool
-from langchain_openrouter import ChatOpenRouter
-from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 from langgraph.prebuilt import ToolNode
-
-from core.adapters.agent.tools import (
-    append_item,
-    assign_consumption,
-    assign_payment,
-    format_receipt,
-    remove_item,
-    show_receipt,
-    unassign_consumption,
-    unassign_payment,
-)
 from core.application.common.agent import (
     AgentI,
     AgentMessage,
@@ -31,7 +18,16 @@ from core.domain.services import (
     CreateRealUser,
     CreateReceipt,
 )
-
+from core.adapters.agent.tools import (
+    append_item,
+    assign_consumption,
+    assign_payment,
+    format_receipt,
+    remove_item,
+    show_receipt,
+    unassign_consumption,
+    unassign_payment,
+)
 from .context import ReceiptModificationContext
 from .state import InvokeState, ReceiptModificationState
 from .templating import system_prompt_template, user_prompt_template
@@ -39,22 +35,25 @@ from .templating import system_prompt_template, user_prompt_template
 if TYPE_CHECKING:
     from core.domain.models import Receipt, User
 
-
-AgentModelClient = NewType("AgentModelClient", ChatOpenRouter)
+AgentGraph = NewType(
+    "AgentGraph",
+    CompiledStateGraph[
+        ReceiptModificationState,
+        ReceiptModificationContext,
+        InvokeState,
+        ReceiptModificationState,
+    ],
+)
 
 
 class Agent(AgentI):
     def __init__(
         self,
-        client: AgentModelClient,
-        checkpointer: BaseCheckpointSaver[str],
         real_user_service: CreateRealUser,
         dummy_user_service: CreateDummyUser,
         receipt_service: CreateReceipt,
+        graph: AgentGraph,
     ) -> None:
-        self.real_user_service = real_user_service
-        self.dummy_user_service = dummy_user_service
-        self.receipt_service = receipt_service
         self.tools: list[BaseTool] = [
             append_item,
             assign_consumption,
@@ -64,14 +63,10 @@ class Agent(AgentI):
             unassign_consumption,
             unassign_payment,
         ]
-        self.llm_with_tools = client.bind_tools(self.tools)
-        self.checkpointer = checkpointer
-        self.agent: CompiledStateGraph[
-            ReceiptModificationState,
-            ReceiptModificationContext,
-            InvokeState,
-            ReceiptModificationState,
-        ] = self._agent_compile()
+        self.real_user_service = real_user_service
+        self.dummy_user_service = dummy_user_service
+        self.receipt_service = receipt_service
+        self.agent = graph
 
     async def invoke(
         self, request: HumanRequest, receipt: Receipt, participants: list[User]
@@ -91,75 +86,6 @@ class Agent(AgentI):
             ),
             updated_receipt=answer["receipt"],
         )
-
-    async def _llm_call(
-        self, state: ReceiptModificationState
-    ) -> dict[str, list[BaseMessage]]:
-        messages: list[BaseMessage] = [
-            SystemMessage(content=system_prompt_template.render()),
-            *state["messages"],
-        ]
-
-        return {"messages": [await self.llm_with_tools.ainvoke(messages)]}
-
-    @staticmethod
-    def _show_receipt_node(
-        state: ReceiptModificationState,
-    ) -> dict[str, list[SystemMessage]]:
-        text = format_receipt(
-            receipt=state["receipt"],
-            current_user_id=state["current_user_id"],
-            user_id_mapping={user.id: user for user in state["users"]},
-        )
-
-        return {
-            "messages": [
-                SystemMessage(
-                    content=(text),
-                )
-            ],
-        }
-
-    @staticmethod
-    def _should_continue(
-        state: ReceiptModificationState,
-    ) -> Literal["tool_node", "__end__"]:
-        messages = state["messages"]
-        last_message = messages[-1]
-
-        if isinstance(last_message, AIMessage) and last_message.tool_calls:
-            return "tool_node"
-
-        return "__end__"
-
-    def _agent_compile(
-        self,
-    ) -> CompiledStateGraph[
-        ReceiptModificationState,
-        ReceiptModificationContext,
-        InvokeState,
-        ReceiptModificationState,
-    ]:
-        agent_builder = StateGraph[
-            ReceiptModificationState,
-            ReceiptModificationContext,
-            InvokeState,
-            ReceiptModificationState,
-        ](
-            state_schema=ReceiptModificationState,
-            context_schema=ReceiptModificationContext,
-            input_schema=InvokeState,
-        )
-        agent_builder.add_node("show_receipt", self._show_receipt_node)
-        agent_builder.add_node("llm_call", self._llm_call)
-        agent_builder.add_node("tool_node", ToolNode(self.tools))
-        agent_builder.add_edge(START, "show_receipt")
-        agent_builder.add_edge("show_receipt", "llm_call")
-        agent_builder.add_conditional_edges(
-            "llm_call", self._should_continue, ["tool_node", END]
-        )
-        agent_builder.add_edge("tool_node", "llm_call")
-        return agent_builder.compile(checkpointer=self.checkpointer)
 
     @staticmethod
     def _construct_invoke_state(
@@ -197,9 +123,6 @@ class Agent(AgentI):
 
     @staticmethod
     def _md_to_html(text: str) -> str:
-        """
-        Converts markdown tags to HTML
-        """
         result = []
         i = 0
         opened = False

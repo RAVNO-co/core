@@ -16,15 +16,19 @@ def unassign_payment(
     amount: Amount,
 ) -> Command[EmptyGoTo]:
     """
-    Убрать товар из назначенного в качестве потребленного пользователю.
+    Убрать товар из назначенного в качестве оплаченного пользователем.
     Чтобы узнать UserID и LineItemID ты можешь воспользоваться show_receipt
     """
     receipt = runtime.state["receipt"]
     try:
         receipt.unassign_payment(item, user_id, amount)
         message_text = "Successfully updated receipt"
-    except (DomainError, KeyError) as err:
-        message_text = f"Failed to update receipt: {type(err)} {err!s}"
+    except DomainError as err:
+        message_text = (
+            f"Failed to update receipt.\n"
+            f"Error type: {type(err).__name__}\n"
+            f"Error details: {vars(err)}"
+        )
     return Command(
         update={
             "receipt": receipt,

@@ -36,7 +36,11 @@ def append_item(
         receipt.append_item(item)
         message_text = "Successfully updated receipt"
     except DomainError as err:
-        message_text = f"Failed to update receipt: {type(err)} {err!s}"
+        message_text = (
+            f"Failed to update receipt.\n"
+            f"Error type: {type(err).__name__}\n"
+            f"Error details: {vars(err)}"
+        )
     return Command(
         update={
             "receipt": receipt,

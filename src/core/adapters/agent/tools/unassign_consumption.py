@@ -23,8 +23,12 @@ def unassign_consumption(
     try:
         receipt.unassign_consumption(item, user_id, amount)
         message_text = "Successfully updated receipt"
-    except (DomainError, KeyError) as err:
-        message_text = f"Failed to update receipt: {type(err)} {err!s}"
+    except DomainError as err:
+        message_text = (
+            f"Failed to update receipt.\n"
+            f"Error type: {type(err).__name__}\n"
+            f"Error details: {vars(err)}"
+        )
     return Command(
         update={
             "receipt": receipt,
