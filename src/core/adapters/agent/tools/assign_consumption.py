@@ -16,10 +16,10 @@ def assign_consumption(
     amount: Amount,
 ) -> Command[EmptyGoTo]:
     """
-    Назначить для LineItem потребителя.
-    Тебе необходимо указать UserID пользователя потребившего товар,
-    LineItemID товара и количество потребленного пользователем товара.
-    Чтобы узнать UserID и LineItemID ты можешь воспользоваться show_receipt
+    Assign a consumer to a LineItem.
+    You need to specify the UserID of the user who consumed the item,
+    the LineItemID of the item, and the quantity of the item consumed by the user.
+    To find out the UserID and LineItemID, you can use show_receipt.
     """
     receipt = runtime.state["receipt"]
     try:

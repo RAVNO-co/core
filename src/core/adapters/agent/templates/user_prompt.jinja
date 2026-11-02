@@ -1,10 +1,10 @@
-Пользователь {{user_id}} отправил сообщение
+User {{user_id}} sent message
 ***
 {{user_input}}
 ***
 
 {% if transcribed_photos %}
-К сообщению были приложены фотографии, их декодированный текст:
+Photos were attached to the message, here is their decoded text:
 {% endif %}
 {% for photo_text in transcribed_photos %}
 ***
@@ -14,7 +14,7 @@
 
 
 {% if transcribed_audios %}
-К сообщению были приложены записи голоса, их декодированный текст:
+Voice recordings were attached to the message, here is their decoded text:
 {% endif %}
 {% for audio_text in transcribed_audios %}
 ***

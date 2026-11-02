@@ -15,11 +15,11 @@ from .base import EmptyGoTo, ModifyReceiptRuntime
 @tool
 def show_receipt(runtime: ModifyReceiptRuntime) -> Command[EmptyGoTo]:
     """
-    Узнать текущее состояние чека.
-    - Текущего пользователя
-    - Список пользователей
-    - неназначенные товары
-    - назначения товаров
+    Get the current status of the receipt.
+    - Current user
+    - User list
+    - Unassigned items
+    - Item assignments
     """
 
     text = format_receipt(

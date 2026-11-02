@@ -16,8 +16,8 @@ def unassign_payment(
     amount: Amount,
 ) -> Command[EmptyGoTo]:
     """
-    Убрать товар из назначенного в качестве оплаченного пользователем.
-    Чтобы узнать UserID и LineItemID ты можешь воспользоваться show_receipt
+    Remove an item assigned as paid for a user.
+    To find out the UserID and LineItemID, you can use show_receipt.
     """
     receipt = runtime.state["receipt"]
     try:

@@ -23,11 +23,11 @@ def append_item(
     price: Money,
 ) -> Command[EmptyGoTo]:
     """
-    Добавить товар в неназначенные.
-    Тебе необходимо указать:
-    1. Название товара
-    2. Количество товара
-    3. Цену товара(берется из чека)
+    Add an item to unassigned.
+    You need to specify:
+    1. Item name
+    2. Item quantity
+    3. Item price (taken from the receipt)
     """
     receipt = runtime.state["receipt"]
 

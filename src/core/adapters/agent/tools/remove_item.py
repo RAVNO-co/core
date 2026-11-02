@@ -13,12 +13,9 @@ def remove_item(
     runtime: ModifyReceiptRuntime, item: LineItemID, amount: Amount
 ) -> Command[EmptyGoTo]:
     """
-    Удалить товар из неназначенных.
-
-    Пример использования: пользователь говорит,
-    что данного товара они изначально не приобретали.
-
-    LineItemID можно посмотреть с помощью show_receipt
+    Remove an item from unassigned.
+    Example of use: the user says that they did not purchase this item in the first place.
+    You can check the LineItemID using show_receipt.
     """
     receipt = runtime.state["receipt"]
     try:

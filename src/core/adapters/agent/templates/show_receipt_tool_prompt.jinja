@@ -1,22 +1,22 @@
-ID текущего пользователя: {{current_user_id}}
+current user ID: {{current_user_id}}
 
-Все участники:
+All users:
 {% for id, user in user_id_mapping.items() %}
 {{id}} : {{user.nickname}}
 {% endfor %}
 
-Товары чека:
-ID \t Название \t К-во \t Цена за единицу
+Receipt items:
+ID \t Name \t Amount \t Unit price
 {% for item in items %}
 {{item.id}}\t{{item.name}}\t{{item.total_amount}}\t{{item.price|round(2)}}
 {% endfor %}
 
-Назначения:
+Assignments:
 
 {% for item in items %}
 {{item.id}} — {{item.name}}
 
-Потребители:
+Consumers:
 {% if item.consumptions %}
 {% for user_id, amount in item.consumptions.items() %}
 {{user_id}}: {{amount}}
@@ -25,13 +25,13 @@ ID \t Название \t К-во \t Цена за единицу
 Нет назначений
 {% endif %}
 
-Плательщики:
+Payers:
 {% if item.payments %}
 {% for user_id, amount in item.payments.items() %}
 {{user_id}}: {{amount}}
 {% endfor %}
 {% else %}
-Нет назначений
+Without assignments
 {% endif %}
 
 {% endfor %}

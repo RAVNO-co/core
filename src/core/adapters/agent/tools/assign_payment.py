@@ -16,10 +16,10 @@ def assign_payment(
     amount: Amount,
 ) -> Command[EmptyGoTo]:
     """
-    Назначить для LineItem оплатившего.
-    Тебе необходимо указать UserID пользователя оплатившего товар,
-    LineItemID товара и количество оплаченного пользователем товара.
-    Чтобы узнать UserID и LineItemID ты можешь воспользоваться show_receipt
+    Assign a payer to a LineItem.
+    You need to specify the UserID of the user who paid for the item,
+    the LineItemID of the item, and the quantity of the item paid for by the user.
+    To find out the UserID and LineItemID, you can use show_receipt.
     """
     receipt = runtime.state["receipt"]
     try:

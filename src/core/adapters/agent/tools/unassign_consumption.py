@@ -16,8 +16,8 @@ def unassign_consumption(
     amount: Amount,
 ) -> Command[EmptyGoTo]:
     """
-    Убрать товар из назначенного в качестве потребленного пользователю.
-    Чтобы узнать UserID и LineItemID ты можешь воспользоваться show_receipt
+    Remove an item assigned as consumed for a user.
+    To find out the UserID and LineItemID, you can use show_receipt.
     """
     receipt = runtime.state["receipt"]
     try:
