@@ -37,6 +37,7 @@ async def test_joining_receipt_by_participant(
 ) -> None:
     user_id = next(iter(receipt.participant_ids))
     user_id_provider_mock = Mock()
+
     user_id_provider_mock.get_current_user_id = Mock(return_value=user_id)
     initial_participant_count = len(receipt.participant_ids)
 
