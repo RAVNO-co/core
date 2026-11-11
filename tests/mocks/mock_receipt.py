@@ -37,7 +37,7 @@ class ReceiptDataFactory(Protocol):
 
 class ReceiptFactory(Protocol):
     def __call__(
-        self, min_collection_lenght: int = 0, **fields: Unpack[ReceiptData]
+        self, min_collection_lenght: int = 1, **fields: Unpack[ReceiptData]
     ) -> Receipt: ...
 
 
@@ -108,7 +108,7 @@ def receipt_factory(
     real_user_factory: RealUserFactory,
 ) -> ReceiptFactory:
     def factory(
-        min_collection_lenght: int = 0, **fields: Unpack[ReceiptData]
+        min_collection_lenght: int = 1, **fields: Unpack[ReceiptData]
     ) -> Receipt:
         data = receipt_data_factory(min_collection_lenght, **fields)
         author = real_user_factory(id=data["author_id"])
