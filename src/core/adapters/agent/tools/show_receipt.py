@@ -1,52 +1,39 @@
 from langchain.messages import ToolMessage
-from langchain.tools import tool
+from langchain.tools import BaseTool, tool
 from langgraph.types import Command
 
 from core.adapters.agent.templating import (
     show_receipt_tool_prompt_template,
 )
-from core.domain.models.receipt import Receipt
-from core.domain.models.user import User
-from core.domain.value_objects import UserID
 
 from .base import EmptyGoTo, ModifyReceiptRuntime
 
 
-@tool
-def show_receipt(runtime: ModifyReceiptRuntime) -> Command[EmptyGoTo]:
-    """
-    Get the current status of the receipt.
-    - Current user
-    - User list
-    - Unassigned items
-    - Item assignments
-    """
+def create_show_receipt_tool() -> BaseTool:
+    @tool
+    def show_receipt(runtime: ModifyReceiptRuntime) -> Command[EmptyGoTo]:
+        """
+        Get the current status of the receipt.
+        - Current user
+        - User list
+        - Unassigned items
+        - Item assignments
+        """
 
-    text = format_receipt(
-        receipt=runtime.state["receipt"],
-        current_user_id=runtime.state["current_user_id"],
-        user_id_mapping=runtime.context["user_id_mapping"],
-    )
+        text = show_receipt_tool_prompt_template.render(
+            current_user_id=runtime.context["current_user_id"],
+            user_id_mapping=runtime.state["participants"],
+            items=runtime.state["receipt"],
+        )
+        message = ToolMessage(
+            text,
+            tool_call_id=runtime.tool_call_id,
+        )
 
-    return Command(
-        update={
-            "messages": [
-                ToolMessage(
-                    text,
-                    tool_call_id=runtime.tool_call_id,
-                )
-            ],
-        }
-    )
+        return Command(
+            update={
+                "messages": [message],
+            }
+        )
 
-
-def format_receipt(
-    receipt: Receipt,
-    current_user_id: UserID,
-    user_id_mapping: dict[UserID, User],
-) -> str:
-    return show_receipt_tool_prompt_template.render(
-        current_user_id=current_user_id,
-        user_id_mapping=user_id_mapping,
-        items=receipt.items,
-    )
+    return show_receipt

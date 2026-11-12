@@ -1,8 +1,8 @@
 current user ID: {{current_user_id}}
 
 All users:
-{% for id, user in user_id_mapping.items() %}
-{{id}} : {{user.nickname}}
+{% for user in participants %}
+{{user.id}} : {{user.nickname}}
 {% endfor %}
 
 Receipt items:

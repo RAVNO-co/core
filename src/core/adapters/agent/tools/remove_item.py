@@ -1,40 +1,32 @@
-from langchain.messages import ToolMessage
-from langchain.tools import tool
+from langchain.tools import BaseTool, tool
 from langgraph.types import Command
 
-from core.domain.exceptions import DomainError
+from core.domain.models import Receipt
 from core.domain.value_objects import Amount, LineItemID
 
-from .base import EmptyGoTo, ModifyReceiptRuntime
+from .base import (
+    EmptyGoTo,
+    ModifyReceiptRuntime,
+    update_receipt_command_strategy,
+)
 
 
-@tool
-def remove_item(
-    runtime: ModifyReceiptRuntime, item: LineItemID, amount: Amount
-) -> Command[EmptyGoTo]:
-    """
-    Remove an item from unassigned.
-    Example of use: the user says that they did not purchase this item in the first place.
-    You can check the LineItemID using show_receipt.
-    """
-    receipt = runtime.state["receipt"]
-    try:
-        receipt.remove_item(item, amount)
-        message_text = "Successfully updated receipt"
-    except DomainError as err:
-        message_text = (
-            f"Failed to update receipt.\n"
-            f"Error type: {type(err).__name__}\n"
-            f"Error details: {vars(err)}"
-        )
-    return Command(
-        update={
-            "receipt": receipt,
-            "messages": [
-                ToolMessage(
-                    message_text,
-                    tool_call_id=runtime.tool_call_id,
-                )
-            ],
-        }
-    )
+def create_remove_item_tool() -> BaseTool:
+    @tool
+    def remove_item(
+        runtime: ModifyReceiptRuntime, item: LineItemID, amount: Amount
+    ) -> Command[EmptyGoTo]:
+        """
+        Remove an item from unassigned.
+        Example of use: the user says that they did not purchase this item in\
+         the first place.
+        You can check the LineItemID using show_receipt.
+        """
+
+        def remove_item_operation(receipt: Receipt) -> Receipt:
+            receipt.remove_item(item, amount)
+            return receipt
+
+        return update_receipt_command_strategy(runtime, remove_item_operation)
+
+    return remove_item

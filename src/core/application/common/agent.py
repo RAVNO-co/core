@@ -14,6 +14,8 @@ class HumanRequest:
     message_text: MessageText | None
     transcribed_audios: Iterable[SpeechText]
     transcribed_photos: Iterable[ImageText]
+    receipt: Receipt
+    participants: list[User]
 
 
 AgentMessage = NewType("AgentMessage", str)
@@ -26,6 +28,4 @@ class AgentResponse:
 
 
 class AgentI(Protocol):
-    async def invoke(
-        self, request: HumanRequest, receipt: Receipt, participants: list[User]
-    ) -> AgentResponse: ...
+    async def invoke(self, request: HumanRequest) -> AgentResponse: ...
