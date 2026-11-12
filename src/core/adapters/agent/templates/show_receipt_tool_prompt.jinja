@@ -17,21 +17,21 @@ Assignments:
 {{item.id}} — {{item.name}}
 
 Consumers:
-{% if item.consumptions %}
-{% for user_id, amount in item.consumptions.items() %}
+  {% if item.consumptions %}
+    {% for user_id, amount in item.consumptions.items() %}
 {{user_id}}: {{amount}}
-{% endfor %}
-{% else %}
+    {% endfor %}
+  {% else %}
 Without assignments
-{% endif %}
+  {% endif %}
 
 Payers:
-{% if item.payments %}
-{% for user_id, amount in item.payments.items() %}
+  {% if item.payments %}
+    {% for user_id, amount in item.payments.items() %}
 {{user_id}}: {{amount}}
-{% endfor %}
-{% else %}
+    {% endfor %}
+  {% else %}
 Without assignments
-{% endif %}
+  {% endif %}
 
 {% endfor %}
