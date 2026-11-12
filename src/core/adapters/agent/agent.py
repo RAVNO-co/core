@@ -1,12 +1,12 @@
 from re import DOTALL, sub
 
+from core.adapters.agent.graph import AgentGraph
 from core.application.common.agent import (
     AgentI,
     AgentMessage,
     AgentResponse,
     HumanRequest,
 )
-from src.core.adapters.agent.graph import AgentGraph
 
 from .context import ContextFactory
 from .state import InvokeStateFactory

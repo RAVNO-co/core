@@ -18,6 +18,6 @@ class AgentSettings(BaseSettings):
     CHECKPOINTER_DSN: PostgresDsn | None = None
 
     AGENT_MODEL: str
-    TEMPERATURE = 0
-    MAX_TOKENS = 4000
+    TEMPERATURE: float = 0
+    MAX_TOKENS: int = 4000
     REASONING: dict[str, str]

@@ -1,25 +1,25 @@
 from dishka import Provider, Scope, provide
 from langchain.tools import BaseTool
 from langchain_openrouter import ChatOpenRouter
-from langgraph.pregel.main import BaseCheckpointSaver
+from langgraph.checkpoint.base import BaseCheckpointSaver
 from psycopg.rows import dict_row
 from psycopg_pool import AsyncConnectionPool
 
-from src.core.adapters.agent import (
+from core.adapters.agent import (
     Agent,
     AgentGraph,
     AgentModelProvider,
     create_agent_graph,
 )
-from src.core.adapters.agent.checkpointer import (
+from core.adapters.agent.checkpointer import (
     construct_memory_checkpointer,
     construct_postgres_checkpointer,
 )
-from src.core.adapters.agent.context import create_context
-from src.core.adapters.agent.state import (
+from core.adapters.agent.context import create_context
+from core.adapters.agent.state import (
     create_invoke_state,
 )
-from src.core.adapters.agent.tools import (
+from core.adapters.agent.tools import (
     create_append_item_tool,
     create_assign_consumption_tool,
     create_assign_payment_tool,
@@ -28,10 +28,9 @@ from src.core.adapters.agent.tools import (
     create_unassign_consumption_tool,
     create_unassign_payment_tool,
 )
-from src.core.application.common.agent import AgentI
-from src.core.domain.services import CreateLineItem
-from src.core.settings import (
-    AgentCheckpointerSettings,
+from core.application.common.agent import AgentI
+from core.domain.services import CreateLineItem
+from core.settings import (
     AgentSettings,
     BaseSettings,
 )
@@ -66,12 +65,12 @@ class AgentProvider(Provider):
         base_settings: BaseSettings, agent_settings: AgentSettings
     ) -> AgentModelProvider:
         return AgentModelProvider(
-            ChatOpenRouter(
-                api_key=base_settings.OPENROUTER_API_KEY,
+            ChatOpenRouter(  # type: ignore[call-arg]
                 model=agent_settings.AGENT_MODEL,
                 temperature=agent_settings.TEMPERATURE,
                 max_tokens=agent_settings.MAX_TOKENS,
                 reasoning=agent_settings.REASONING,
+                api_key=base_settings.OPENROUTER_API_KEY,
             )
         )
 
