@@ -788,20 +788,20 @@ files = [
 
 [[package]]
 name = "langchain"
-version = "1.4.7"
+version = "1.5.0"
 description = "Building applications with LLMs through composability"
 optional = false
-python-versions = "<4.0.0,>=3.10.0"
+python-versions = "<4.0.0,>=3.11.0"
 groups = ["main"]
 files = [
-    {file = "langchain-1.4.7-py3-none-any.whl", hash = "sha256:bc40d4a9a46f0c3d75e316c0e576931fe19bceef83912a71dc1e0df781eb8f82"},
-    {file = "langchain-1.4.7.tar.gz", hash = "sha256:818275348cd707f7fbbe92ece0a725c25823140a054cf29865f420e0200fa2af"},
+    {file = "langchain-1.5.0-py3-none-any.whl", hash = "sha256:24e94c496a3e532be1f9541edb475d5d0975aeb1211c3f8fecc042da3ec44cfa"},
+    {file = "langchain-1.5.0.tar.gz", hash = "sha256:62b8d048847d7063cf769b39d32219c4a8ff8abc75f3ebfde461e65b9ff8ff49"},
 ]
 
 [package.dependencies]
-langchain-core = ">=1.6.13,<2.0.0"
+langchain-core = ">=1.8.0,<2.0.0"
 langgraph = ">=1.2.12,<1.3.0"
-pydantic = ">=2.7.4,<3.0.0"
+pydantic = ">=2.7.4"
 
 [package.extras]
 anthropic = ["langchain-anthropic"]
@@ -815,7 +815,7 @@ google-genai = ["langchain-google-genai"]
 google-vertexai = ["langchain-google-vertexai"]
 groq = ["langchain-groq"]
 huggingface = ["langchain-huggingface"]
-mcp = ["fastmcp (>=4.0.11,<5.0.0)"]
+mcp = ["fastmcp (>=4.0.11)"]
 meta = ["langchain-meta"]
 mistralai = ["langchain-mistralai"]
 ollama = ["langchain-ollama"]
@@ -826,17 +826,18 @@ xai = ["langchain-xai"]
 
 [[package]]
 name = "langchain-core"
-version = "1.7.1"
+version = "1.8.0"
 description = "Building applications with LLMs through composability"
 optional = false
-python-versions = "<4.0.0,>=3.10.0"
+python-versions = "<4.0.0,>=3.11.0"
 groups = ["main"]
 files = [
-    {file = "langchain_core-1.7.1-py3-none-any.whl", hash = "sha256:2d668788945e824832e19bca05788a25dbb864197d63ec48b583057cf8d975fa"},
-    {file = "langchain_core-1.7.1.tar.gz", hash = "sha256:5dc2a357e1aa40e84c7f29755182121b3acf04410e55fa3723915f645033fede"},
+    {file = "langchain_core-1.8.0-py3-none-any.whl", hash = "sha256:89732f9e7d311de9913ba22caf921c72520145a829f05ec1d9c85013e904213c"},
+    {file = "langchain_core-1.8.0.tar.gz", hash = "sha256:8c571299ae83acec89599cbbb6890018f54225da336a6e315c9e882dd5da6502"},
 ]
 
 [package.dependencies]
+certifi = ">=2026.10.19"
 httpx = ">=0.23.0"
 jsonpatch = ">=1.33.0"
 langchain-protocol = ">=0.0.20"
@@ -2732,4 +2733,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15.0"
-content-hash = "3c348f6b5059b16c7a1d7db33e314555f78c31ae81b98d1413c0d475e8f051ed"
+content-hash = "441b36c6c3514a2afed095295d7e05c2cb8f23dea530bb669fa4fb3342465515"
