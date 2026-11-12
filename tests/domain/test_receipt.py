@@ -207,7 +207,7 @@ def test_line_item_not_in_receipt_error(
     receipt_factory: ReceiptFactory, line_item: LineItem
 ) -> None:
     receipt = receipt_factory(min_collection_lenght=1)
-    user_id = next(iter(line_item.payments.keys()))
+    user_id = next(iter(receipt.participant_ids))
 
     with pytest.raises(LineItemNotInReceiptError):
         receipt.assign_payment(line_item.id, user_id, line_item.total_amount)
