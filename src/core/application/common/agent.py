@@ -25,6 +25,7 @@ AgentMessage = NewType("AgentMessage", str)
 class AgentResponse:
     answer: AgentMessage
     updated_receipt: Receipt
+    updated_participants: list[User]
 
 
 class AgentI(Protocol):

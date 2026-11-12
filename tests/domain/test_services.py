@@ -1,12 +1,16 @@
 import pytest
 
-from core.domain.exceptions import ReceiptNotFullyFilledError
+from core.domain.exceptions import (
+    AccessDeniedError,
+    ReceiptNotFullyFilledError,
+)
 from core.domain.models import Receipt
 from core.domain.services import (
     CreateDummyUser,
     CreateLineItem,
     CreateRealUser,
     CreateReceipt,
+    EnsureAccess,
     FormConsumptionTable,
     FormPaymentTable,
     FormTransactionInstructions,
@@ -130,3 +134,23 @@ def test_transiction_intructioins_is_filled_check(
         _ = form_transaction_instructions(
             receipt_factory(min_collection_lenght=5)
         )
+
+
+def test_ensure_access_allows_participant_id(
+    ensure_access: EnsureAccess, receipt: Receipt
+) -> None:
+    user_id = next(iter(receipt.participant_ids))
+
+    ensure_access(receipt, user_id)
+
+
+def test_ensure_access_denies_not_participant_id(
+    ensure_access: EnsureAccess,
+    receipt_factory: ReceiptFactory,
+    user_data: UserData,
+) -> None:
+    receipt = receipt_factory(
+        items=(), participant_ids=set()
+    )  # Remove long participants list
+    with pytest.raises(AccessDeniedError):
+        ensure_access(receipt, user_data["id"])

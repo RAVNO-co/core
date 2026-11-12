@@ -5,6 +5,7 @@ from core.domain.services import (
     CreateLineItem,
     CreateRealUser,
     CreateReceipt,
+    EnsureAccess,
     FormConsumptionTable,
     FormPaymentTable,
     FormTransactionInstructions,
@@ -49,3 +50,8 @@ def form_transaction_instructions(
     return FormTransactionInstructions(
         form_consumption_table, form_payment_table
     )
+
+
+@pytest.fixture
+def ensure_access() -> EnsureAccess:
+    return EnsureAccess()
