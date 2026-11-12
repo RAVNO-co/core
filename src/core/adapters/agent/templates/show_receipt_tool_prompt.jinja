@@ -1,0 +1,37 @@
+current user ID: {{current_user_id}}
+
+All users:
+{% for user in participants %}
+{{user.id}} : {{user.nickname}}
+{% endfor %}
+
+Receipt items:
+ID \t Name \t Amount \t Unit price
+{% for item in items %}
+{{item.id}}\t{{item.name}}\t{{item.total_amount}}\t{{item.price|round(2)}}
+{% endfor %}
+
+Assignments:
+
+{% for item in items %}
+{{item.id}} — {{item.name}}
+
+Consumers:
+  {% if item.consumptions %}
+    {% for user_id, amount in item.consumptions.items() %}
+{{user_id}}: {{amount}}
+    {% endfor %}
+  {% else %}
+Without assignments
+  {% endif %}
+
+Payers:
+  {% if item.payments %}
+    {% for user_id, amount in item.payments.items() %}
+{{user_id}}: {{amount}}
+    {% endfor %}
+  {% else %}
+Without assignments
+  {% endif %}
+
+{% endfor %}

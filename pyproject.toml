@@ -14,6 +14,8 @@ dependencies = [
     "langchain-openrouter>=0.1.0",
     "langgraph-checkpoint-postgres>=3.2.0",
     "dishka>=1.7.2",
+    "jinja2 (>=3.1.6,<4.0.0)",
+    "langgraph (>=1.2.20,<2.0.0)",
 ]
 
 [dependency-groups]
@@ -102,13 +104,16 @@ select = [
     "TRY", # tryceratops
 ]
 ignore = [
-    "missing-trailing-comma"# ruff warn on it
+    "missing-trailing-comma", # ruff warn on it
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = [
     "assert", # Asserts are essential for tests
     "suspicious-non-cryptographic-random-usage" # Tests does not need cryptographic random
+]
+"src/core/adapters/agent/tools/*" = [
+    "line-too-long"  #  Tools docstrings is used by llm and should have exact formatting
 ]
 "tests/application/*" = [
     "too-many-arguments", # Do not trigger on interactors DI

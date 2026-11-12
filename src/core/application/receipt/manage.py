@@ -50,18 +50,23 @@ class ManageReceipt(Interactor[ManageReceiptDTO, ManageReceiptResultDTO]):
 
         self.ensure_access_service(receipt, user_id)
 
+        transcribed_audios, transcribed_photos = await self.transcribe_media(
+            context.audios, context.photos
+        )
+        participants = list(
+            await self.user_db_gateway.fetch_many(
+                ids=tuple(receipt.participant_ids)
+            )
+        )
         response = await self.agent.invoke(
             HumanRequest(
-                user_id,
-                context.text,
-                *await self.transcribe_media(context.audios, context.photos),
-            ),
-            receipt,
-            participants=list(
-                await self.user_db_gateway.fetch_many(
-                    ids=tuple(receipt.participant_ids)
-                )
-            ),
+                user_id=user_id,
+                message_text=context.text,
+                transcribed_audios=transcribed_audios,
+                transcribed_photos=transcribed_photos,
+                receipt=receipt,
+                participants=participants,
+            )
         )
 
         async with self.transaction_manager:
