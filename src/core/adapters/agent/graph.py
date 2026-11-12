@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Literal
+from typing import Literal, NewType
 from uuid import uuid4
 
 from langchain.messages import (
@@ -17,9 +17,8 @@ from .context import ReceiptModificationContext
 from .state import InvokeState, ReceiptModificationState
 from .templates import system_prompt_template
 
-if TYPE_CHECKING:
-    pass
-
+#  Separate Agent, OCR, ASR models types
+AgentModelProvider = NewType("AgentModelProvider", ChatOpenRouter)
 
 AgentGraph = CompiledStateGraph[
     ReceiptModificationState,
@@ -62,9 +61,9 @@ def should_continue(
 
 
 def create_agent_graph(
-    model_provider: ChatOpenRouter,
+    model_provider: AgentModelProvider,
     checkpointer: BaseCheckpointSaver[str],
-    tools: list[BaseTool],
+    tools: tuple[BaseTool, ...],
 ) -> AgentGraph:
 
     model_with_tools = model_provider.bind_tools(

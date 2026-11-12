@@ -1,7 +1,4 @@
 from re import DOTALL, sub
-from typing import NewType
-
-from langgraph.graph.state import CompiledStateGraph
 
 from core.application.common.agent import (
     AgentI,
@@ -9,19 +6,10 @@ from core.application.common.agent import (
     AgentResponse,
     HumanRequest,
 )
+from src.core.adapters.agent.graph import AgentGraph
 
-from .context import ContextFactory, ReceiptModificationContext
-from .state import InvokeState, InvokeStateFactory, ReceiptModificationState
-
-AgentGraph = NewType(
-    "AgentGraph",
-    CompiledStateGraph[
-        ReceiptModificationState,
-        ReceiptModificationContext,
-        InvokeState,
-        ReceiptModificationState,
-    ],
-)
+from .context import ContextFactory
+from .state import InvokeStateFactory
 
 
 class Agent(AgentI):
