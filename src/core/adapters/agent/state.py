@@ -4,7 +4,7 @@ from langchain.agents import AgentState
 from langchain.messages import AnyMessage, HumanMessage
 from langgraph.graph.message import add_messages
 
-from core.adapters.agent.templating import user_prompt_template
+from core.adapters.agent.templates import user_prompt_template
 from core.application.common.agent import HumanRequest
 from core.domain.models import Receipt, User
 

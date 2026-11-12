@@ -15,7 +15,7 @@ from langgraph.prebuilt import ToolNode
 
 from .context import ReceiptModificationContext
 from .state import InvokeState, ReceiptModificationState
-from .templating import system_prompt_template
+from .templates import system_prompt_template
 
 if TYPE_CHECKING:
     pass

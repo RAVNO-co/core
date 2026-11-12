@@ -2,7 +2,7 @@ from langchain.messages import ToolMessage
 from langchain.tools import BaseTool, tool
 from langgraph.types import Command
 
-from core.adapters.agent.templating import (
+from core.adapters.agent.templates import (
     show_receipt_tool_prompt_template,
 )
 

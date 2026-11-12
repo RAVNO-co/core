@@ -46,6 +46,7 @@ class Agent(AgentI):
                 self._md_to_html(answer["messages"][-1].content)
             ),
             updated_receipt=answer["receipt"],
+            updated_participants=answer["participants"],
         )
 
     def _refactor_response(self, text: str) -> str:
