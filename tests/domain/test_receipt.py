@@ -204,8 +204,9 @@ def test_payment_disassigning(
 
 
 def test_line_item_not_in_receipt_error(
-    receipt: Receipt, line_item: LineItem
+    receipt_factory: ReceiptFactory, line_item: LineItem
 ) -> None:
+    receipt = receipt_factory(min_collection_lenght=1)
     user_id = next(iter(line_item.payments.keys()))
 
     with pytest.raises(LineItemNotInReceiptError):
