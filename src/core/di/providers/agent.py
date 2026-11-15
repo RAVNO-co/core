@@ -66,7 +66,7 @@ class AgentProvider(Provider):
     ) -> AgentModelProvider:
         return AgentModelProvider(
             ChatOpenRouter(  # type: ignore[call-arg]
-                model=agent_settings.AGENT_MODEL,
+                model=agent_settings.MODEL,
                 temperature=agent_settings.TEMPERATURE,
                 max_tokens=agent_settings.MAX_TOKENS,
                 reasoning=agent_settings.REASONING,

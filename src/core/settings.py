@@ -14,10 +14,10 @@ class BaseSettings(PydanticSettingsBase):
 
 class AgentSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="AGENT_")
-    # No DSN creates in-memory checkpointer
+    # None creates in-memory checkpointer
     CHECKPOINTER_DSN: PostgresDsn | None = None
 
-    AGENT_MODEL: str
+    MODEL: str
     TEMPERATURE: float = 0
     MAX_TOKENS: int = 4000
     REASONING: dict[str, str]
