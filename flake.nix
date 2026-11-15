@@ -34,9 +34,8 @@
               ]
             };
 
-            poetry install
-
-            $SHELL
+            PYTHONPATH=src/
+            eval $(poetry env activate)
           '';
         };
       }

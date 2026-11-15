@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from langchain.tools import BaseTool, tool
 from langgraph.types import Command
 
@@ -14,7 +16,7 @@ from .base import (
 def create_remove_item_tool() -> BaseTool:
     @tool
     def remove_item(
-        runtime: ModifyReceiptRuntime, item: LineItemID, amount: Amount
+        runtime: ModifyReceiptRuntime, item: LineItemID, amount: Decimal
     ) -> Command[EmptyGoTo]:
         """
         Remove an item from unassigned.
@@ -22,6 +24,7 @@ def create_remove_item_tool() -> BaseTool:
          the first place.
         You can check the LineItemID using show_receipt.
         """
+        amount = Amount(amount)
 
         def remove_item_operation(receipt: Receipt) -> Receipt:
             receipt.remove_item(item, amount)

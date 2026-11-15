@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from langchain.tools import BaseTool, tool
 from langgraph.types import Command
 
@@ -17,7 +19,7 @@ def create_assign_consumption_tool() -> BaseTool:
         runtime: ModifyReceiptRuntime,
         item: LineItemID,
         user_id: UserID,
-        amount: Amount,
+        amount: Decimal,
     ) -> Command[EmptyGoTo]:
         """
         Assign a consumer to a LineItem.
@@ -25,6 +27,7 @@ def create_assign_consumption_tool() -> BaseTool:
         the LineItemID of the item, and the quantity of the item consumed by the user.
         To find out the UserID and LineItemID, you can use show_receipt.
         """
+        amount = Amount(amount)
 
         def assign_item_operation(receipt: Receipt) -> Receipt:
             receipt.assign_consumption(item, user_id, amount)

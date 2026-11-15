@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from langchain.tools import BaseTool, tool
 from langgraph.types import Command
 
@@ -21,8 +23,8 @@ def create_append_item_tool(create_line_item: CreateLineItem) -> BaseTool:
     def append_item(
         runtime: ModifyReceiptRuntime,
         name: LineItemName,
-        total_amount: Amount,
-        price: Money,
+        total_amount: Decimal,
+        price: Decimal,
     ) -> Command[EmptyGoTo]:
         """
         Add an item to unassigned.
@@ -31,6 +33,8 @@ def create_append_item_tool(create_line_item: CreateLineItem) -> BaseTool:
         2. Item quantity
         3. Item price (taken from the receipt)
         """
+        total_amount = Amount(total_amount)
+        price = Money(price)
 
         def append_item_operation(receipt: Receipt) -> Receipt:
             item = create_line_item(name, total_amount, price)

@@ -27,6 +27,9 @@ class Agent(AgentI):
         answer = await self.graph.ainvoke(
             input=self.create_state(request),
             context=self.create_context(request.user_id),
+            config={
+                "configurable": {"thread_id": str(request.receipt.id)},
+            },
         )
 
         return AgentResponse(

@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from langchain.tools import BaseTool, tool
 from langgraph.types import Command
 
@@ -17,12 +19,13 @@ def create_unassign_payment_tool() -> BaseTool:
         runtime: ModifyReceiptRuntime,
         item: LineItemID,
         user_id: UserID,
-        amount: Amount,
+        amount: Decimal,
     ) -> Command[EmptyGoTo]:
         """
         Remove an item assigned as paid for a user.
         To find out the UserID and LineItemID, you can use show_receipt.
         """
+        amount = Amount(amount)
 
         def unassign_payment_operation(receipt: Receipt) -> Receipt:
             receipt.unassign_payment(item, user_id, amount)

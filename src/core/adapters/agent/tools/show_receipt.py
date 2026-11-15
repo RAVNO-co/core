@@ -23,7 +23,7 @@ def create_show_receipt_tool() -> BaseTool:
         text = show_receipt_tool_prompt_template.render(
             current_user_id=runtime.context["current_user_id"],
             user_id_mapping=runtime.state["participants"],
-            items=runtime.state["receipt"],
+            items=runtime.state["receipt"].items,
         )
         message = ToolMessage(
             text,
