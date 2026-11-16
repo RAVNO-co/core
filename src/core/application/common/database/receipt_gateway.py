@@ -1,4 +1,5 @@
 from typing import Protocol, TypedDict, Unpack
+from collections.abc import Sequence
 
 from core.domain.models import Receipt
 from core.domain.value_objects import ReceiptID
@@ -22,5 +23,17 @@ class ReceiptDBGatewayI(Protocol):
         """
         ...
 
+class ReceiptMultipleDBGatewayI(Protocol):
+    async def fetch_page(
+            self,
+            user_id,
+            page_size,
+            page_index,
+            ) -> Sequence[Receipt]:
+        """Fetch a receipt list of page_size containing user_id, page_index used for pagination. Returns empty list, if no receipts found
+        Raises:
+            UserNotFoundError: user was not found
+        """
+        ...
 
 class ReceiptNotFoundError(Exception): ...
