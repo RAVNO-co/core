@@ -33,6 +33,7 @@ class ReceiptMultipleDBGatewayI(Protocol):
         """Fetch a receipt list of page_size containing user_id, page_index used for pagination. Returns empty list, if no receipts found
         Raises:
             UserNotFoundError: user was not found
+            PageOutOfBoundsError: page out of bounds error
         """
         ...
 
