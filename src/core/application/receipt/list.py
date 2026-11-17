@@ -5,16 +5,16 @@ from collections.abc import Sequence
 
 from core.application.common import Interactor
 from core.application.common.database import (
-    ReceiptMultipleDBGatewayI,
+    ReceiptDBGatewayI,
     UserDBGatewayI,
 )
 from core.application.common.user_id_provider import UserIDProviderI
 from core.domain.models import Receipt
+from core.domain.value_objects import ReceiptID
 
 @dataclass(frozen=True, slots=True)
 class ListReceiptDTO: 
-    page_size: int | None
-    page_index: int | None
+    cursor: ReceiptID
 
 @dataclass(frozen=True, slots=True)
 class ListReceiptResultDTO: 
@@ -23,7 +23,7 @@ class ListReceiptResultDTO:
 @final
 @dataclass(frozen=True, slots=True)
 class ListReceipt(Interactor[ListReceiptDTO, ListReceiptResultDTO]):
-    receipt_multiple_db_gateway: ReceiptMultipleDBGatewayI
+    receipt_db_gateway: ReceiptDBGatewayI
     user_db_gateway: UserDBGatewayI
     user_id_provider: UserIDProviderI
 
@@ -31,6 +31,6 @@ class ListReceipt(Interactor[ListReceiptDTO, ListReceiptResultDTO]):
         self, context: ListReceiptDTO
         ) -> ListReceiptResultDTO:
         user_id = self.user_id_provider.get_current_user_id()
-        receipts = await self.receipt_multiple_db_gateway.fetch_page(context.page_size,context.page_index,user_id)
+        receipts = await self.receipt_db_gateway.fetch_many(user_id, context.cursor)
 
         return ListReceiptResultDTO(receipts)
