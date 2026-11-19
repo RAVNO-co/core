@@ -9,9 +9,6 @@ from .receipt_gateway import (
     ReceiptDBGatewayI as ReceiptDBGatewayI,
 )
 from .receipt_gateway import (
-    ReceiptMultipleDBGatewayI as ReceiptMultipleDBGatewayI,
-)
-from .receipt_gateway import (
     ReceiptFilters as ReceiptFilters,
 )
 from .receipt_gateway import (
