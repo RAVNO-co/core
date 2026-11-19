@@ -1,5 +1,6 @@
 from typing import Protocol, TypedDict
 
+from core.application.common.agent import HumanRequest
 from core.domain.value_objects import UserID
 
 
@@ -9,9 +10,9 @@ class ReceiptModificationContext(TypedDict):
 
 class ContextFactory(Protocol):
     def __call__(
-        self, current_user_id: UserID
+        self, request: HumanRequest
     ) -> ReceiptModificationContext: ...
 
 
-def create_context(current_user_id: UserID) -> ReceiptModificationContext:
-    return {"current_user_id": current_user_id}
+def create_context(request: HumanRequest) -> ReceiptModificationContext:
+    return {"current_user_id": request.user_id}

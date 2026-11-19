@@ -12,9 +12,10 @@ from core.adapters.agent import (
     create_agent_graph,
 )
 from core.adapters.agent.checkpointer import (
-    construct_memory_checkpointer,
-    construct_postgres_checkpointer,
+    create_inmemory_checkpointer,
+    create_postgres_checkpointer,
 )
+from core.adapters.agent.config import create_runable_config
 from core.adapters.agent.context import create_context
 from core.adapters.agent.state import (
     create_invoke_state,
@@ -47,6 +48,7 @@ class AgentProvider(Provider):
         return Agent(
             state_factory=create_invoke_state,
             context_factory=create_context,
+            config_factory=create_runable_config,
             graph=graph,
         )
 
@@ -80,14 +82,14 @@ class AgentProvider(Provider):
         settings: AgentSettings,
     ) -> BaseCheckpointSaver[str]:
         if settings.CHECKPOINTER_DSN is None:
-            return construct_memory_checkpointer()
+            return create_inmemory_checkpointer()
 
         pool = AsyncConnectionPool(
             str(settings.CHECKPOINTER_DSN),
             kwargs={"autocommit": True, "row_factory": dict_row},
         )
 
-        checkpointer = construct_postgres_checkpointer(pool)  # type: ignore[arg-type]
+        checkpointer = create_postgres_checkpointer(pool)  # type: ignore[arg-type]
         await checkpointer.setup()
         return checkpointer
 

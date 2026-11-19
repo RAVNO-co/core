@@ -102,6 +102,7 @@ select = [
     "FURB", # refurb
     "RUF", # ruff
     "TRY", # tryceratops
+    "ISC", # flake8-implicit-str-concat
 ]
 ignore = [
     "missing-trailing-comma", # ruff warn on it

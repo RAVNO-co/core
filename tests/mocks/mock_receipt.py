@@ -53,7 +53,7 @@ def receipt_schema_factory(
                 cast(LineItemData, line_item_schema())
                 for _ in range(
                     field(
-                        "integer_number", start=min_collection_lenght, end=100
+                        "integer_number", start=min_collection_lenght, end=10
                     )
                 )
             )

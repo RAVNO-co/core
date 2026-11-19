@@ -15,11 +15,11 @@ serde = JsonPlusSerializer(
 )
 
 
-def construct_postgres_checkpointer(
+def create_postgres_checkpointer(
     pool: AsyncConnectionPool[AsyncConnection[DictRow]],
 ) -> AsyncPostgresSaver:
     return AsyncPostgresSaver(pool, serde=serde)
 
 
-def construct_memory_checkpointer() -> InMemorySaver:
+def create_inmemory_checkpointer() -> InMemorySaver:
     return InMemorySaver(serde=serde)
