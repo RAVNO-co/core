@@ -54,7 +54,7 @@ async def test_list_normal(
     assert res.receipts
 
 
-async def test_list_by_unathenthiated_user(
+async def test_list_by_unauthenthiated_user(
     receipt_db_gateway: ReceiptDBGatewayI,
     user_db_gateway: UserDBGatewayI,
     input_dto: ListReceiptDTO,

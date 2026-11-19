@@ -1,5 +1,5 @@
-from typing import Protocol, TypedDict, Unpack
 from collections.abc import Sequence
+from typing import Protocol, TypedDict, Unpack
 
 from core.domain.models import Receipt
 from core.domain.value_objects import ReceiptID, UserID
@@ -18,11 +18,11 @@ class ReceiptDBGatewayI(Protocol):
         ...
 
     async def fetch_many(
-            self,
-            user_id: UserID,
-            cursor: ReceiptID,
-            ) -> Sequence[Receipt]:
-        """Fetch a receipt list starting from cursor receipt. Returns empty list, if no receipts found
+        self,
+        user_id: UserID,
+        cursor: ReceiptID,
+    ) -> Sequence[Receipt]:
+        """Fetch receipts starting from the cursor receipt; returns an empty sequence whe none are found.
         Raises:
             UserNotFoundError: user was not found
             CursorNotInListError: cursor not in list
@@ -35,6 +35,11 @@ class ReceiptDBGatewayI(Protocol):
         """
         ...
 
+
 class ReceiptNotFoundError(Exception): ...
+
+
 class UserNotFoundError(Exception): ...
+
+
 class CursorNotInListError(Exception): ...
