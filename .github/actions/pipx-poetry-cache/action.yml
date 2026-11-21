@@ -45,7 +45,7 @@ runs:
     - if: >
         steps.find-pipx.outcome == 'failure' || 
         steps.use-bin-cache.outputs.cache-hit != 'true' || 
-        steps.use-venv-cache.outputs.cache-hit != 'true' ||
+        steps.use-venv-cache.outputs.cache-hit != 'true'
 
       run: |
         pipx install --force poetry==${INPUTS_POETRY_VERSION}
