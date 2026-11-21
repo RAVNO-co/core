@@ -33,7 +33,10 @@ def user_data_factory() -> UserDataFactory:
     def factory(**fields: Unpack[UserData]) -> UserData:
         field = Field()
         schema = Schema(
-            lambda: {"id": field("uuid"), "nickname": field("name")},
+            lambda: {
+                "id": UserID(field("uuid_object")),
+                "nickname": UserNickname(field("name")),
+            },
             iterations=1,
         )
         return {**schema.create()[0], **fields}  # type:ignore[typeddict-item]

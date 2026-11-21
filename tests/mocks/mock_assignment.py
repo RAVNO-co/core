@@ -30,7 +30,7 @@ def assignment_schema_factory(
         minimum = 0.01
         maximum = float(max_amount) - minimum  # exclude max value from range
         return {
-            "user_id": UserID(field("uuid")),
+            "user_id": UserID(field("uuid_object")),
             "amount": Amount(
                 field(
                     "price",

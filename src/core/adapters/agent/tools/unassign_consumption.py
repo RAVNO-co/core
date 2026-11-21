@@ -27,12 +27,12 @@ def create_unassign_consumption_tool() -> BaseTool:
         """
         amount = Amount(amount)
 
-        def unassign_item_operation(receipt: Receipt) -> Receipt:
+        def unassign_consumption_operation(receipt: Receipt) -> Receipt:
             receipt.unassign_consumption(item, user_id, amount)
             return receipt
 
         return update_receipt_command_strategy(
-            runtime, unassign_item_operation
+            runtime, unassign_consumption_operation
         )
 
     return unassign_consumption

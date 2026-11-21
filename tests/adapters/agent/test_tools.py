@@ -28,15 +28,14 @@ def runtime() -> ModifyReceiptRuntime:
 def test_append_item_tool(
     tool_runtime: ModifyReceiptRuntime, line_item_data: LineItemData
 ) -> None:
-    tool = create_append_item_tool(CreateLineItem())
-    tool_input = {
-        "runtime": tool_runtime,
-        "name": line_item_data["name"],
-        "total_amount": line_item_data["total_amount"],
-        "price": line_item_data["price"],
-    }
-
-    command = tool.invoke(tool_input)
+    command = create_append_item_tool(CreateLineItem()).invoke(
+        {
+            "runtime": tool_runtime,
+            "name": line_item_data["name"],
+            "total_amount": line_item_data["total_amount"],
+            "price": line_item_data["price"],
+        }
+    )
     assert isinstance(command.update["messages"][-1], ToolMessage)
 
 
@@ -45,92 +44,120 @@ def test_remove_item_tool(
     receipt: Receipt,
     line_item_factory: LineItemFactory,
 ) -> None:
-    tool = create_remove_item_tool()
     line_item = line_item_factory(consumptions={}, payments={})
     receipt.append_item(line_item)
-    tool_input = {
-        "runtime": tool_runtime,
-        "item": line_item.id,
-        "amount": line_item.free_amount,
-    }
 
-    command = tool.invoke(tool_input)
+    command = create_remove_item_tool().invoke(
+        {
+            "runtime": tool_runtime,
+            "item": line_item.id,
+            "amount": line_item.free_amount,
+        }
+    )
+
     assert isinstance(command.update["messages"][-1], ToolMessage)
 
 
 def test_show_receipt_tool(tool_runtime: ModifyReceiptRuntime) -> None:
-    tool = create_show_receipt_tool()
-    tool_input = {
-        "runtime": tool_runtime,
-    }
+    command = create_show_receipt_tool().invoke(
+        {
+            "runtime": tool_runtime,
+        }
+    )
 
-    command = tool.invoke(tool_input)
     assert isinstance(command.update["messages"][-1], ToolMessage)
 
 
 def test_assign_payment_tool(
-    tool_runtime: ModifyReceiptRuntime, receipt: Receipt, line_item: LineItem
+    tool_runtime: ModifyReceiptRuntime,
+    receipt: Receipt,
+    line_item_factory: LineItemFactory,
 ) -> None:
-    tool = create_assign_payment_tool()
+    line_item = line_item_factory(
+        consumptions={},
+        payments={},
+    )
     receipt.append_item(line_item)
-    tool_input = {
-        "runtime": tool_runtime,
-        "item": line_item.id,
-        "amount": line_item.free_amount,
-        "user_id": receipt.author_id,
-    }
 
-    command = tool.invoke(tool_input)
+    command = create_assign_payment_tool().invoke(
+        {
+            "runtime": tool_runtime,
+            "item": line_item.id,
+            "amount": line_item.free_amount,
+            "user_id": receipt.author_id,
+        }
+    )
+
     assert isinstance(command.update["messages"][-1], ToolMessage)
 
 
 def test_assign_consumption_tool(
-    tool_runtime: ModifyReceiptRuntime, receipt: Receipt, line_item: LineItem
+    tool_runtime: ModifyReceiptRuntime,
+    receipt: Receipt,
+    line_item_factory: LineItemFactory,
 ) -> None:
-    tool = create_assign_consumption_tool()
+    line_item = line_item_factory(
+        consumptions={},
+        payments={},
+    )
     receipt.append_item(line_item)
-    tool_input = {
-        "runtime": tool_runtime,
-        "item": line_item.id,
-        "amount": line_item.free_amount,
-        "user_id": receipt.author_id,
-    }
 
-    command = tool.invoke(tool_input)
+    command = create_assign_consumption_tool().invoke(
+        {
+            "runtime": tool_runtime,
+            "item": line_item.id,
+            "amount": line_item.free_amount,
+            "user_id": receipt.author_id,
+        }
+    )
+
     assert isinstance(command.update["messages"][-1], ToolMessage)
 
 
 def test_unassign_payment_tool(
-    tool_runtime: ModifyReceiptRuntime, receipt: Receipt, line_item: LineItem
+    tool_runtime: ModifyReceiptRuntime,
+    receipt: Receipt,
+    line_item_factory: LineItemFactory,
 ) -> None:
-    tool = create_unassign_payment_tool()
+    line_item = line_item_factory(
+        consumptions={},
+        payments={},
+    )
     amount = cast(Amount, line_item.free_amount)
     receipt.append_item(line_item)
     receipt.assign_payment(line_item.id, receipt.author_id, amount)
-    tool_input = {
-        "runtime": tool_runtime,
-        "item": line_item.id,
-        "amount": amount,
-        "user_id": receipt.author_id,
-    }
 
-    command = tool.invoke(tool_input)
+    command = create_unassign_payment_tool().invoke(
+        {
+            "runtime": tool_runtime,
+            "item": line_item.id,
+            "amount": amount,
+            "user_id": receipt.author_id,
+        }
+    )
+
     assert isinstance(command.update["messages"][-1], ToolMessage)
 
 
 def test_unassign_consumption_tool(
-    tool_runtime: ModifyReceiptRuntime, receipt: Receipt, line_item: LineItem
+    tool_runtime: ModifyReceiptRuntime,
+    receipt: Receipt,
+    line_item_factory: LineItemFactory,
 ) -> None:
-    tool = create_unassign_consumption_tool()
+    line_item = line_item_factory(
+        consumptions={},
+        payments={},
+    )
     amount = cast(Amount, line_item.free_amount)
     receipt.append_item(line_item)
     receipt.assign_payment(line_item.id, receipt.author_id, amount)
-    tool_input = {
-        "runtime": tool_runtime,
-        "item": line_item.id,
-        "amount": line_item.free_amount,
-        "user_id": receipt.author_id,
-    }
+    command = create_unassign_consumption_tool().invoke(
+        {
+            "runtime": tool_runtime,
+            "item": line_item.id,
+            "amount": amount,
+            "user_id": receipt.author_id,
+        }
+    )
 
-    command = tool.invoke(tool_input)
     assert isinstance(command.update["messages"][-1], ToolMessage)

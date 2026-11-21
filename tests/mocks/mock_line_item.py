@@ -63,7 +63,7 @@ def line_item_schema_factory(
             sum(consumers.values()), sum(payers.values())
         )
         return {
-            "id": LineItemID(field("uuid")),
+            "id": LineItemID(field("uuid_object")),
             "name": LineItemName(field("word")),
             "total_amount": total_amount,
             "price": Money(field("price", minimum=0.01, as_decimal=True)),

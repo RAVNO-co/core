@@ -58,13 +58,13 @@ def config(human_request: HumanRequest) -> RunnableConfig:
 
 @pytest.fixture
 def tool_runtime(
-    invoke_state: InvokeState,
+    # Actually it is InvokeState but they are identical
+    invoke_state: ReceiptModificationState,
     context: ReceiptModificationContext,
     config: RunnableConfig,
 ) -> ModifyReceiptRuntime:
-    state = cast(ReceiptModificationState, invoke_state)
     return ModifyReceiptRuntime(
-        state=state,
+        state=invoke_state,
         context=context,
         config=config,
         stream_writer=Mock(),

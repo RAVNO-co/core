@@ -62,13 +62,13 @@ def receipt_schema_factory(
     def schema() -> dict[str, Any]:
         items = bulk_line_item_schema()
 
-        participant_ids: list[UserID] = [UserID(field("uuid"))]
+        participant_ids: list[UserID] = [UserID(field("uuid_object"))]
         for item in items:
             participant_ids.extend(item["payments"].keys())
             participant_ids.extend(item["consumptions"].keys())
 
         return {
-            "id": ReceiptID(field("uuid")),
+            "id": ReceiptID(field("uuid_object")),
             "title": ReceiptTitle(field("sentence")),
             "author_id": participant_ids[0],
             "created_at": field("datetime", timezone="UTC"),

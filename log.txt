@@ -1,0 +1,43 @@
+============================= test session starts ==============================
+platform linux -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+Using --randomly-seed=2901130009
+rootdir: /home/beavernotacat/Projects/ravno/core
+configfile: pyproject.toml
+plugins: cov-7.1.0, randomly-5.0.0, anyio-4.14.2, langsmith-0.11.2, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 1 item
+
+tests/adapters/agent/test_tools.py F
+
+=================================== FAILURES ===================================
+________________________ test_unassign_consumption_tool ________________________
+
+tool_runtime = ToolRuntime(state={'messages': [HumanMessage(content='User 4d64f8fe-7a61-4fac-9885-dc3db44e3a89 sent message\n***\nHe ...k id='260211761348096'>, tool_call_id='receipt-tool-call', store=None, tools=[], execution_info=None, server_info=None)
+receipt = Receipt(id=UUID('43c5337e-b6eb-41ad-9d67-7949489f557b'), title='Atoms are used within a program to denote distinguishe...97ae-4a44-b63d-3ed20229da91'): Decimal('1202.77'), UUID('c68b361e-2f51-4842-add2-c637259717ca'): Decimal('851.09')}))})
+line_item = LineItem(id=UUID('01a1fd3b-d48e-74e5-a37d-51d09d105a08'), name='silver', total_amount=Decimal('59156.19'), price=Decim...d1-00a3-498b-b0e0-61d41122e9ff'): Decimal('281.14'), UUID('a5c9c24f-db48-43bc-a76b-294e28b1383e'): Decimal('295.77')}))
+
+    def test_unassign_consumption_tool(
+        tool_runtime: ModifyReceiptRuntime, receipt: Receipt, line_item: LineItem
+    ) -> None:
+        tool = create_unassign_consumption_tool()
+        amount = cast(Amount, line_item.free_amount)
+>       receipt.append_item(line_item)
+
+tests/adapters/agent/test_tools.py:126: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/core/domain/models/receipt.py:53: in append_item
+    self._check_user_participant(payer_id)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Receipt(id=UUID('43c5337e-b6eb-41ad-9d67-7949489f557b'), title='Atoms are used within a program to denote distinguishe...97ae-4a44-b63d-3ed20229da91'): Decimal('1202.77'), UUID('c68b361e-2f51-4842-add2-c637259717ca'): Decimal('851.09')}))})
+user_id = UUID('b37682e1-917e-42fd-8410-e8b8767f149b')
+
+    def _check_user_participant(self, user_id: UserID) -> None:
+        if user_id not in self.participant_ids:
+>           raise UserNotParticipantError(user_id)
+E           core.domain.exceptions.UserNotParticipantError: b37682e1-917e-42fd-8410-e8b8767f149b
+
+src/core/domain/models/receipt.py:107: UserNotParticipantError
+=========================== short test summary info ============================
+FAILED tests/adapters/agent/test_tools.py::test_unassign_consumption_tool - c...
+============================== 1 failed in 3.87s ===============================
