@@ -15,8 +15,8 @@ permissions:
   contents: read
 
 env:
-  PYTHON_VERSION: "3.14"
-  POETRY_VERSION: "2.4.1" # Keep in sync with dockerfile
+  PYTHON_VERSION: "3.15" # Keep in sync with dockerfile
+  POETRY_VERSION: "2.5.1" # Keep in sync with dockerfile
 
 jobs:
   ruff:
@@ -61,14 +61,22 @@ jobs:
       - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/cache@v6
+      # - uses: actions/cache@v6
+      #   with:
+      #     path: .pytest_cache
+      #     key: ${{ runner.os }}-pytest-${{ hashFiles('pyproject.toml', 'poetry.lock') }}
+      # - uses: $/.github/actions/setup-poetry
+      #   with: 
+      #     python-version: ${{ env.PYTHON_VERSION }}
+      #     poetry-version: ${{ env.POETRY_VERSION }}
+      - uses: actions/setup-python@v7
         with:
-          path: .pytest_cache
-          key: ${{ runner.os }}-pytest-${{ hashFiles('pyproject.toml', 'poetry.lock') }}
-      - uses: $/.github/actions/setup-poetry
-        with: 
-          python-version: ${{ env.PYTHON_VERSION }}
-          poetry-version: ${{ env.POETRY_VERSION }}
+          python-version: ${{ inputs.python-version }}
+          cache: "poetry"
+      - run: |
+          pipx install --force poetry==${{ env.POETRY_VERSION }}
+      - run: |
+          poetry install
       - run: |
           poetry run pytest --cov=src --cov-report=xml
       - name: Upload coverage reports to Codecov
