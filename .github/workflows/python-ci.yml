@@ -69,6 +69,10 @@ jobs:
       #   with: 
       #     python-version: ${{ env.PYTHON_VERSION }}
       #     poetry-version: ${{ env.POETRY_VERSION }}
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ inputs.python-version }}
+          cache: "poetry"
       - run: |
           pipx install --force poetry==${{ env.POETRY_VERSION }}
       - run: |
