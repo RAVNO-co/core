@@ -1,14 +1,15 @@
-name: Setup poetry or use cache
-description: Helper to set up poetry cache with pipx
+name: Cached poetry setup
+description: |
+  Helper that combines
+  - cached `pipx install poetry`
+  - `setup-python` action call
+  - cached `poetry install`
 
 inputs:
   python-version:
     required: true
   poetry-version:
     required: true
-  command:
-    description: Command to run with 'poetry run'
-    required: false
 
 runs:
   using: composite
@@ -21,7 +22,7 @@ runs:
         PIPX_VENV="$(pipx environment --value PIPX_LOCAL_VENVS)"
         PIPX_BIN="$(pipx environment --value PIPX_BIN_DIR)"
 
-        if [ -z "$PIPX_VENV" || -z "$PIPX_BIN" ]; then
+        if [[ -z "$PIPX_VENV" || -z "$PIPX_BIN" ]]; then
           exit 1
         fi
 
@@ -33,14 +34,14 @@ runs:
       uses: actions/cache@v6
       with:
         path: "${{ steps.find-pipx.outputs.pipx-bins-path }}/poetry"
-        key: ${{ runner.os }}-poetry-${{ inputs.poetry-version }}
+        key: ${{ env.ImageOS }}-${{ env.ImageVersion }}-poetry-${{ inputs.poetry-version }}
 
     - if: steps.find-pipx.outcome == 'success'
       id: use-venv-cache
       uses: actions/cache@v6
       with:
         path: "${{ steps.find-pipx.outputs.pipx-venv }}/poetry"
-        key: ${{ runner.os }}-poetry-venv-${{ inputs.poetry-version }}
+        key: ${{ env.ImageOS }}-${{ env.ImageVersion }}-poetry-venv-${{ inputs.poetry-version }}
 
     - if: >
         steps.find-pipx.outcome == 'failure' || 
@@ -48,7 +49,7 @@ runs:
         steps.use-venv-cache.outputs.cache-hit != 'true'
 
       run: |
-        pipx install poetry==${INPUTS_POETRY_VERSION}
+        pipx install --force poetry==${INPUTS_POETRY_VERSION}
       shell: bash
       env:
         INPUTS_POETRY_VERSION: ${{ inputs.poetry-version }}
@@ -58,8 +59,3 @@ runs:
         cache: "poetry"
     -  run: poetry install
        shell: bash
-    -  if: inputs.command != ''
-       run: poetry run ${INPUTS_COMMAND}
-       shell: bash
-       env:
-         INPUTS_COMMAND: ${{ inputs.command }}
