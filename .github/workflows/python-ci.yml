@@ -65,10 +65,14 @@ jobs:
       #   with:
       #     path: .pytest_cache
       #     key: ${{ runner.os }}-pytest-${{ hashFiles('pyproject.toml', 'poetry.lock') }}
-      - uses: $/.github/actions/setup-poetry
-        with: 
-          python-version: ${{ env.PYTHON_VERSION }}
-          poetry-version: ${{ env.POETRY_VERSION }}
+      # - uses: $/.github/actions/setup-poetry
+      #   with: 
+      #     python-version: ${{ env.PYTHON_VERSION }}
+      #     poetry-version: ${{ env.POETRY_VERSION }}
+      - run: |
+          pipx install --force poetry==${INPUTS_POETRY_VERSION}
+      - run: |
+          poetry install
       - run: |
           poetry run pytest --cov=src --cov-report=xml
       - name: Upload coverage reports to Codecov
