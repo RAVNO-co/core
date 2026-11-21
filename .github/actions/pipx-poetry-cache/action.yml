@@ -21,7 +21,7 @@ runs:
         PIPX_VENV="$(pipx environment --value PIPX_LOCAL_VENVS)"
         PIPX_BIN="$(pipx environment --value PIPX_BIN_DIR)"
 
-        if [ -z "$PIPX_VENV" || -z "$PIPX_BIN" ]; then
+        if [[ -z "$PIPX_VENV" || -z "$PIPX_BIN" ]]; then
           exit 1
         fi
 
@@ -33,22 +33,33 @@ runs:
       uses: actions/cache@v6
       with:
         path: "${{ steps.find-pipx.outputs.pipx-bins-path }}/poetry"
-        key: ${{ runner.os }}-poetry-${{ inputs.poetry-version }}
+        key: ${{ runner.os }}-poetry-${{ inputs.poetry-version }}-${{ inputs.python-version }}
 
     - if: steps.find-pipx.outcome == 'success'
       id: use-venv-cache
       uses: actions/cache@v6
       with:
         path: "${{ steps.find-pipx.outputs.pipx-venv }}/poetry"
-        key: ${{ runner.os }}-poetry-venv-${{ inputs.poetry-version }}
+        key: ${{ runner.os }}-poetry-venv-${{ inputs.poetry-version }}-${{ inputs.python-version }}
+
+    - name: Validate Poetry
+      id: validate-poetry
+      shell: bash
+      run: |
+        if poetry --version; then
+          echo "valid=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "valid=false" >> "$GITHUB_OUTPUT"
+        fi
 
     - if: >
         steps.find-pipx.outcome == 'failure' || 
         steps.use-bin-cache.outputs.cache-hit != 'true' || 
-        steps.use-venv-cache.outputs.cache-hit != 'true'
+        steps.use-venv-cache.outputs.cache-hit != 'true' ||
+        steps.validate-poetry.outputs.valid != 'true'
 
       run: |
-        pipx install poetry==${INPUTS_POETRY_VERSION}
+        pipx install --force poetry==${INPUTS_POETRY_VERSION}
       shell: bash
       env:
         INPUTS_POETRY_VERSION: ${{ inputs.poetry-version }}
