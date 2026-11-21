@@ -33,7 +33,7 @@ from core.application.common.agent import AgentI
 from core.domain.services import CreateLineItem
 from core.settings import (
     AgentSettings,
-    BaseSettings,
+    OpenRouterSettings,
 )
 
 
@@ -64,7 +64,7 @@ class AgentProvider(Provider):
     @provide
     @staticmethod
     def get_model_provider(
-        base_settings: BaseSettings, agent_settings: AgentSettings
+        open_router_settings: OpenRouterSettings, agent_settings: AgentSettings
     ) -> AgentModelProvider:
         return AgentModelProvider(
             ChatOpenRouter(  # type: ignore[call-arg]
@@ -72,7 +72,7 @@ class AgentProvider(Provider):
                 temperature=agent_settings.TEMPERATURE,
                 max_tokens=agent_settings.MAX_TOKENS,
                 reasoning=agent_settings.REASONING,
-                api_key=base_settings.OPENROUTER_API_KEY,
+                api_key=open_router_settings.API_KEY,
             )
         )
 

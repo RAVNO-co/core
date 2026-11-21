@@ -1,6 +1,6 @@
 from dishka import Provider, Scope, provide
 
-from core.settings import AgentSettings, BaseSettings
+from core.settings import AgentSettings, OpenRouterSettings
 
 
 class SettingsProvider(Provider):
@@ -13,5 +13,5 @@ class SettingsProvider(Provider):
 
     @provide
     @staticmethod
-    def get_base_settings() -> BaseSettings:
-        return BaseSettings()
+    def get_open_router_settings() -> OpenRouterSettings:
+        return OpenRouterSettings()
