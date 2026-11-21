@@ -3,23 +3,16 @@ from unittest.mock import AsyncMock, Mock
 import pytest
 from langchain.messages import AIMessage
 from langchain.tools import BaseTool
-from langgraph.graph.state import RunnableConfig
-from langgraph.pregel.main import BaseCheckpointSaver
+from langchain_core.runnables import RunnableConfig
+from langgraph.checkpoint.base import BaseCheckpointSaver
 
 from core.adapters.agent import (
     AgentModelProvider,
     create_agent_graph,
-    create_context,
-    create_invoke_state,
 )
 from core.adapters.agent.checkpointer import create_inmemory_checkpointer
-from core.adapters.agent.config import create_runable_config
 from core.adapters.agent.context import ReceiptModificationContext
 from core.adapters.agent.state import InvokeState
-from core.adapters.agent.tools import (
-    create_assign_consumption_tool,
-)
-from core.application.common.agent import HumanRequest
 
 
 @pytest.fixture
@@ -56,21 +49,6 @@ def checkpointer() -> BaseCheckpointSaver[str]:
 @pytest.fixture
 def tools() -> tuple[BaseTool, ...]:
     return ()
-
-
-@pytest.fixture
-def invoke_state(human_request: HumanRequest) -> InvokeState:
-    return create_invoke_state(human_request)
-
-
-@pytest.fixture
-def context(human_request: HumanRequest) -> ReceiptModificationContext:
-    return create_context(human_request)
-
-
-@pytest.fixture
-def config(human_request: HumanRequest) -> RunnableConfig:
-    return create_runable_config(human_request)
 
 
 async def test_graph(

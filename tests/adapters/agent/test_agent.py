@@ -59,7 +59,7 @@ async def test_agent(
 
     await agent.invoke(human_request)
 
-    graph.ainvoke = cast(AsyncMock, graph.ainvoke)
+    graph = cast(Mock, graph)
     call_args = graph.ainvoke.await_args
     assert call_args.kwargs["input"]["receipt"] == receipt
     assert len(call_args.kwargs["input"]["messages"]) == 1

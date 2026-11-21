@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from langgraph.graph.state import RunnableConfig
+from langchain_core.runnables import RunnableConfig
 
 from core.application.common.agent import HumanRequest
 
