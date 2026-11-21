@@ -33,14 +33,14 @@ runs:
       uses: actions/cache@v6
       with:
         path: "${{ steps.find-pipx.outputs.pipx-bins-path }}/poetry"
-        key: ${{ runner.os }}-${{ env.ImageOS }}-${{ env.ImageVersion }}-poetry-${{ inputs.poetry-version }}-${{ inputs.python-version }}
+        key: ${{ env.ImageOS }}-${{ env.ImageVersion }}-poetry-${{ inputs.poetry-version }}
 
     - if: steps.find-pipx.outcome == 'success'
       id: use-venv-cache
       uses: actions/cache@v6
       with:
         path: "${{ steps.find-pipx.outputs.pipx-venv }}/poetry"
-        key: ${{ runner.os }}-${{ env.ImageOS }}-${{ env.ImageVersion }}-poetry-venv-${{ inputs.poetry-version }}-${{ inputs.python-version }}
+        key: ${{ env.ImageOS }}-${{ env.ImageVersion }}-poetry-venv-${{ inputs.poetry-version }}
 
     - if: >
         steps.find-pipx.outcome == 'failure' || 
