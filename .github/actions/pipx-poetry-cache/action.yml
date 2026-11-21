@@ -21,7 +21,7 @@ runs:
         PIPX_VENV="$(pipx environment --value PIPX_LOCAL_VENVS)"
         PIPX_BIN="$(pipx environment --value PIPX_BIN_DIR)"
 
-        if [ -z "$PIPX_VENV" || -z "$PIPX_BIN" ]; then
+        if [[ -z "$PIPX_VENV" || -z "$PIPX_BIN" ]]; then
           exit 1
         fi
 
