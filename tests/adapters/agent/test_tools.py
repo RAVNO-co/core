@@ -14,7 +14,7 @@ from core.adapters.agent.tools import (
     create_unassign_payment_tool,
 )
 from core.adapters.agent.tools.base import ModifyReceiptRuntime
-from core.domain.models import LineItem, Receipt
+from core.domain.models import Receipt
 from core.domain.services import CreateLineItem
 from core.domain.value_objects import Amount
 from tests.mocks import LineItemData, LineItemFactory

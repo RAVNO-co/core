@@ -1,5 +1,4 @@
 from random import randint
-from typing import cast
 from unittest.mock import Mock
 
 import pytest
