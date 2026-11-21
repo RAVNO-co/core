@@ -70,7 +70,7 @@ jobs:
       #     python-version: ${{ env.PYTHON_VERSION }}
       #     poetry-version: ${{ env.POETRY_VERSION }}
       - run: |
-          pipx install --force poetry==${INPUTS_POETRY_VERSION}
+          pipx install --force poetry==${{ env.POETRY_VERSION }}
       - run: |
           poetry install
       - run: |
