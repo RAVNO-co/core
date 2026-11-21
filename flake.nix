@@ -21,7 +21,7 @@
           packages = with pkgs; [
             gnumake
             poetry
-            python314
+            python315
             zizmor
             hadolint
           ];
