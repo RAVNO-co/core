@@ -30,7 +30,7 @@ jobs:
         with:
           path: .ruff_cache
           key: ${{ runner.os }}-ruff-${{ hashFiles('pyproject.toml', 'poetry.lock') }}
-      - uses: $/.github/actions/pipx-poetry-cache
+      - uses: $/.github/actions/setup-poetry
         with: 
           python-version: ${{ env.PYTHON_VERSION }}
           poetry-version: ${{ env.POETRY_VERSION }}
@@ -47,7 +47,7 @@ jobs:
         with:
           path: .mypy_cache
           key: ${{ runner.os }}-mypy-${{ hashFiles('pyproject.toml', 'poetry.lock') }}
-      - uses: $/.github/actions/pipx-poetry-cache
+      - uses: $/.github/actions/setup-poetry
         with: 
           python-version: ${{ env.PYTHON_VERSION }}
           poetry-version: ${{ env.POETRY_VERSION }}
@@ -70,7 +70,7 @@ jobs:
         with:
           path: .pytest_cache
           key: ${{ runner.os }}-pytest-${{ hashFiles('pyproject.toml', 'poetry.lock') }}
-      - uses: $/.github/actions/pipx-poetry-cache
+      - uses: $/.github/actions/setup-poetry
         with: 
           python-version: ${{ env.PYTHON_VERSION }}
           poetry-version: ${{ env.POETRY_VERSION }}

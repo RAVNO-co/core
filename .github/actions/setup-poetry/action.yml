@@ -1,14 +1,15 @@
-name: Setup poetry or use cache
-description: Helper to set up poetry cache with pipx
+name: Cached poetry setup
+description: |
+  Helper that combines
+  - cached `pipx install poetry`
+  - `setup-python` action call
+  - cached `poetry install`
 
 inputs:
   python-version:
     required: true
   poetry-version:
     required: true
-  command:
-    description: Command to run with 'poetry run'
-    required: false
 
 runs:
   using: composite
@@ -58,8 +59,3 @@ runs:
         cache: "poetry"
     -  run: poetry install
        shell: bash
-    -  if: inputs.command != ''
-       run: poetry run ${INPUTS_COMMAND}
-       shell: bash
-       env:
-         INPUTS_COMMAND: ${{ inputs.command }}
