@@ -40,6 +40,9 @@ class _AmountABC(Decimal, ABC):
     def __iadd__(self, other: _Decimal, /) -> Self:
         return self.__add__(other)
 
+    def __isub__(self, other: _Decimal, /) -> Self:
+        return self.__sub__(other)
+
 
 class Amount(_AmountABC):
     """Represents physical amount of smth both in quantitity and weight"""
