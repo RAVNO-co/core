@@ -48,7 +48,7 @@ runs:
         steps.use-venv-cache.outputs.cache-hit != 'true'
 
       run: |
-        pipx install poetry==${INPUTS_POETRY_VERSION}
+        pipx install --force poetry==${INPUTS_POETRY_VERSION}
       shell: bash
       env:
         INPUTS_POETRY_VERSION: ${{ inputs.poetry-version }}
