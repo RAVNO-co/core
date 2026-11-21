@@ -80,13 +80,14 @@ def receipt_schema_factory(
 
 
 @pytest.fixture
-def receipt_data_factory() -> ReceiptDataFactory:
+def receipt_data_factory(mimesis_field: Field) -> ReceiptDataFactory:
     def factory(
         min_collection_lenght: int = 0, **fields: Unpack[ReceiptData]
     ) -> ReceiptData:
-        field = Field()
         schema = Schema(
-            schema=receipt_schema_factory(field, min_collection_lenght),
+            schema=receipt_schema_factory(
+                mimesis_field, min_collection_lenght
+            ),
             iterations=1,
         )
         return {**schema.create()[0], **fields}  # type:ignore[typeddict-item]

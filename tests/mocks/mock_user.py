@@ -29,13 +29,12 @@ class DummyUserFactory(Protocol):
 
 
 @pytest.fixture
-def user_data_factory() -> UserDataFactory:
+def user_data_factory(mimesis_field: Field) -> UserDataFactory:
     def factory(**fields: Unpack[UserData]) -> UserData:
-        field = Field()
         schema = Schema(
             lambda: {
-                "id": UserID(field("uuid_object")),
-                "nickname": UserNickname(field("name")),
+                "id": UserID(mimesis_field("uuid_object")),
+                "nickname": UserNickname(mimesis_field("name")),
             },
             iterations=1,
         )
