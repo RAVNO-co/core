@@ -53,7 +53,7 @@ def receipt_schema_factory(
                 cast(LineItemData, line_item_schema())
                 for _ in range(
                     field(
-                        "integer_number", start=min_collection_lenght, end=100
+                        "integer_number", start=min_collection_lenght, end=10
                     )
                 )
             )
@@ -62,15 +62,15 @@ def receipt_schema_factory(
     def schema() -> dict[str, Any]:
         items = bulk_line_item_schema()
 
-        participant_ids: list[UserID] = []
+        participant_ids: list[UserID] = [UserID(field("uuid_object"))]
         for item in items:
             participant_ids.extend(item["payments"].keys())
             participant_ids.extend(item["consumptions"].keys())
 
         return {
-            "id": ReceiptID(field("uuid")),
+            "id": ReceiptID(field("uuid_object")),
             "title": ReceiptTitle(field("sentence")),
-            "author_id": next(iter([*participant_ids, UserID(field("uuid"))])),
+            "author_id": participant_ids[0],
             "created_at": field("datetime", timezone="UTC"),
             "participant_ids": set(participant_ids),
             "items": items,
@@ -80,13 +80,14 @@ def receipt_schema_factory(
 
 
 @pytest.fixture
-def receipt_data_factory() -> ReceiptDataFactory:
+def receipt_data_factory(mimesis_field: Field) -> ReceiptDataFactory:
     def factory(
         min_collection_lenght: int = 0, **fields: Unpack[ReceiptData]
     ) -> ReceiptData:
-        field = Field()
         schema = Schema(
-            schema=receipt_schema_factory(field, min_collection_lenght),
+            schema=receipt_schema_factory(
+                mimesis_field, min_collection_lenght
+            ),
             iterations=1,
         )
         return {**schema.create()[0], **fields}  # type:ignore[typeddict-item]

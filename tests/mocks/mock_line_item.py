@@ -63,7 +63,7 @@ def line_item_schema_factory(
             sum(consumers.values()), sum(payers.values())
         )
         return {
-            "id": LineItemID(field("uuid")),
+            "id": LineItemID(field("uuid_object")),
             "name": LineItemName(field("word")),
             "total_amount": total_amount,
             "price": Money(field("price", minimum=0.01, as_decimal=True)),
@@ -75,15 +75,14 @@ def line_item_schema_factory(
 
 
 @pytest.fixture
-def line_item_data_factory() -> LineItemDataFactory:
-    field = Field()
-
+def line_item_data_factory(mimesis_field: Field) -> LineItemDataFactory:
     def factory(
         min_collection_lenght: int = 0, **fields: Unpack[LineItemData]
     ) -> LineItemData:
-        field.reseed()
         schema = Schema(
-            schema=line_item_schema_factory(field, min_collection_lenght),
+            schema=line_item_schema_factory(
+                mimesis_field, min_collection_lenght
+            ),
             iterations=1,
         )
         return {**schema.create()[0], **fields}  # type:ignore[typeddict-item]
