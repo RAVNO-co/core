@@ -13,11 +13,14 @@ from core.adapters.agent.tools import (
     create_unassign_consumption_tool,
     create_unassign_payment_tool,
 )
-from core.adapters.agent.tools.base import ModifyReceiptRuntime
+from core.adapters.agent.tools.base import (
+    SUCCESS_MESSAGE_TEXT,
+    ModifyReceiptRuntime,
+)
 from core.domain.models import Receipt
 from core.domain.services import CreateLineItem
 from core.domain.value_objects import Amount
-from tests.mocks import LineItemData, LineItemFactory
+from tests.mocks import LineItemData, LineItemDataFactory, LineItemFactory
 
 
 @pytest.fixture
@@ -37,6 +40,7 @@ def test_append_item_tool(
         }
     )
     assert isinstance(command.update["messages"][-1], ToolMessage)
+    assert command.update["messages"][-1].text == SUCCESS_MESSAGE_TEXT
 
 
 def test_remove_item_tool(
@@ -56,6 +60,7 @@ def test_remove_item_tool(
     )
 
     assert isinstance(command.update["messages"][-1], ToolMessage)
+    assert command.update["messages"][-1].text == SUCCESS_MESSAGE_TEXT
 
 
 def test_show_receipt_tool(tool_runtime: ModifyReceiptRuntime) -> None:
@@ -89,6 +94,7 @@ def test_assign_payment_tool(
     )
 
     assert isinstance(command.update["messages"][-1], ToolMessage)
+    assert command.update["messages"][-1].text == SUCCESS_MESSAGE_TEXT
 
 
 def test_assign_consumption_tool(
@@ -112,6 +118,7 @@ def test_assign_consumption_tool(
     )
 
     assert isinstance(command.update["messages"][-1], ToolMessage)
+    assert command.update["messages"][-1].text == SUCCESS_MESSAGE_TEXT
 
 
 def test_unassign_payment_tool(
@@ -137,6 +144,7 @@ def test_unassign_payment_tool(
     )
 
     assert isinstance(command.update["messages"][-1], ToolMessage)
+    assert command.update["messages"][-1].text == SUCCESS_MESSAGE_TEXT
 
 
 def test_unassign_consumption_tool(
@@ -150,7 +158,7 @@ def test_unassign_consumption_tool(
     )
     amount = cast(Amount, line_item.free_amount)
     receipt.append_item(line_item)
-    receipt.assign_payment(line_item.id, receipt.author_id, amount)
+    receipt.assign_consumption(line_item.id, receipt.author_id, amount)
     command = create_unassign_consumption_tool().invoke(
         {
             "runtime": tool_runtime,
@@ -161,3 +169,22 @@ def test_unassign_consumption_tool(
     )
 
     assert isinstance(command.update["messages"][-1], ToolMessage)
+    assert command.update["messages"][-1].text == SUCCESS_MESSAGE_TEXT
+
+
+def test_base_tool_error_message_generation(
+    tool_runtime: ModifyReceiptRuntime,
+    line_item_data_factory: LineItemDataFactory,
+) -> None:
+    line_item = line_item_data_factory(consumptions={}, payments={})
+
+    command = create_remove_item_tool().invoke(
+        {
+            "runtime": tool_runtime,
+            "item": line_item["id"],
+            "amount": line_item["total_amount"],
+        }
+    )
+
+    assert isinstance(command.update["messages"][-1], ToolMessage)
+    assert command.update["messages"][-1].text != SUCCESS_MESSAGE_TEXT

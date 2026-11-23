@@ -20,6 +20,9 @@ class ReceiptOperation(Protocol):
     def __call__(self, receipt: Receipt) -> Receipt: ...
 
 
+SUCCESS_MESSAGE_TEXT = "Successfully updated receipt"
+
+
 def _construct_error_message(err: DomainError) -> str:
     match type(err):
         case _:
@@ -34,10 +37,9 @@ def update_receipt_command_strategy(
     runtime: ModifyReceiptRuntime,
     operation: ReceiptOperation,
 ) -> Command[EmptyGoTo]:
-    """Strategy pattern type shit description"""
 
     receipt = runtime.state["receipt"]
-    message_text = "Successfully updated receipt"
+    message_text = SUCCESS_MESSAGE_TEXT
 
     try:
         receipt = operation(receipt)
