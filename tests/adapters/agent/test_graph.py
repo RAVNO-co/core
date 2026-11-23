@@ -1,3 +1,4 @@
+from typing import cast
 from unittest.mock import AsyncMock, Mock
 
 import pytest
@@ -16,12 +17,8 @@ from core.adapters.agent.state import InvokeState
 
 
 @pytest.fixture
-def model_provider() -> AgentModelProvider:
-    model = Mock()
-    bound_model = model.bind_tools.return_value
-    bound_model.ainvoke = AsyncMock()
-
-    bound_model.ainvoke.side_effect = [
+def agent_message_plan() -> tuple[AIMessage, ...]:
+    return (
         AIMessage(
             "",
             tool_calls=[
@@ -37,7 +34,18 @@ def model_provider() -> AgentModelProvider:
             ],
         ),
         AIMessage("Done"),
-    ]
+    )
+
+
+@pytest.fixture
+def model_provider(
+    agent_message_plan: tuple[AIMessage, ...],
+) -> AgentModelProvider:
+    model = Mock()
+    bound_model = model.bind_tools.return_value
+
+    bound_model.ainvoke = AsyncMock()
+    bound_model.ainvoke.side_effect = agent_message_plan
     return model
 
 
@@ -53,6 +61,7 @@ def tools() -> tuple[BaseTool, ...]:
 
 async def test_graph(
     invoke_state: InvokeState,
+    agent_message_plan: tuple[AIMessage, ...],
     context: ReceiptModificationContext,
     config: RunnableConfig,
     model_provider: AgentModelProvider,
@@ -61,4 +70,13 @@ async def test_graph(
 ) -> None:
     graph = create_agent_graph(model_provider, checkpointer, tools)
 
-    await graph.ainvoke(invoke_state, config=config, context=context)
+    result = await graph.ainvoke(invoke_state, config=config, context=context)
+
+    model_provider = cast(AsyncMock, model_provider)
+    model_provider.bind_tools.return_value.ainvoke.assert_awaited()
+    assert model_provider.bind_tools.return_value.ainvoke.await_count == len(
+        agent_message_plan
+    )
+    assert len(result["messages"]) > 0
+    assert isinstance(result["messages"][-1], AIMessage)
+    assert result["messages"][-1] == agent_message_plan[-1]
