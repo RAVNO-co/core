@@ -30,7 +30,7 @@ def assignment_schema_factory(
         minimum = 0.01
         maximum = float(max_amount) - minimum  # exclude max value from range
         return {
-            "user_id": UserID(field("uuid")),
+            "user_id": UserID(field("uuid_object")),
             "amount": Amount(
                 field(
                     "price",
@@ -45,14 +45,13 @@ def assignment_schema_factory(
 
 
 @pytest.fixture
-def assignment_data_factory() -> AssignmentDataFactory:
+def assignment_data_factory(mimesis_field: Field) -> AssignmentDataFactory:
     def factory(
         max_amount: Amount = DEFAULT_MAX_AMOUNT,
         **fields: Unpack[AssignmentData],
     ) -> AssignmentData:
-        field = Field()
         schema = Schema(
-            assignment_schema_factory(field, max_amount),
+            assignment_schema_factory(mimesis_field, max_amount),
             iterations=1,
         )
         return {**schema.create()[0], **fields}  # type:ignore[typeddict-item]

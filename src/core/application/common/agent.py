@@ -1,6 +1,8 @@
 from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import NewType, Protocol
+from typing import Annotated, NewType, Protocol
+
+from annotated_types import DocInfo
 
 from core.application.common.asr import SpeechText
 from core.application.common.ocr import ImageText
@@ -14,6 +16,14 @@ class HumanRequest:
     message_text: MessageText | None
     transcribed_audios: Iterable[SpeechText]
     transcribed_photos: Iterable[ImageText]
+    receipt: Receipt
+    participants: Annotated[
+        list[User],
+        DocInfo(
+            "Receipt only contains IDs \
+            And agent need user nicknames"
+        ),
+    ]
 
 
 AgentMessage = NewType("AgentMessage", str)
@@ -27,9 +37,4 @@ class AgentResponse:
 
 
 class AgentI(Protocol):
-    async def invoke(
-        self,
-        request: HumanRequest,
-        receipt: Receipt,
-        participants: list[User],
-    ) -> AgentResponse: ...
+    async def invoke(self, request: HumanRequest) -> AgentResponse: ...

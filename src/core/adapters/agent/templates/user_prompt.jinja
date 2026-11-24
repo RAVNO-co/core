@@ -1,0 +1,24 @@
+User {{user_id}} sent message
+***
+{{user_input}}
+***
+
+{% if transcribed_photos %}
+Photos were attached to the message, here is their decoded text:
+{% endif %}
+{% for photo_text in transcribed_photos %}
+***
+{{photo_text}}
+***
+{% endfor %}
+
+
+{% if transcribed_audios %}
+Voice recordings were attached to the message, here is their decoded text:
+{% endif %}
+{% for audio_text in transcribed_audios %}
+***
+{{audio_text}}
+***
+{% endfor %}
+

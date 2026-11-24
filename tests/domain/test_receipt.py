@@ -149,7 +149,7 @@ def test_consumption_assigning(
     )
 
 
-def test_consumption_disassigning(
+def test_consumption_unassigning(
     receipt_factory: ReceiptFactory,
 ) -> None:
     receipt = receipt_factory(min_collection_lenght=1)
@@ -189,7 +189,7 @@ def test_payment_assigning(
     )
 
 
-def test_payment_disassigning(
+def test_payment_unassigning(
     receipt_factory: ReceiptFactory,
 ) -> None:
     receipt = receipt_factory(min_collection_lenght=1)

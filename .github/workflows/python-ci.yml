@@ -69,7 +69,14 @@ jobs:
         with: 
           python-version: ${{ env.PYTHON_VERSION }}
           poetry-version: ${{ env.POETRY_VERSION }}
-      - run: |
+      - name: Run module tests
+        env:
+          OPENROUTER_API_KEY: ...
+          AGENT_MODEL: nvidia/nemotron-nano-12b-v2-vl:free
+          AGENT_TEMPERATURE: 0
+          AGENT_MAX_TOKENS: 4000
+          AGENT_REASONING: '{"effort": "low", "summary": "auto"}'
+        run: |
           poetry run pytest --cov=src --cov-report=xml
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v7.1.1
