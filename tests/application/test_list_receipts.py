@@ -4,9 +4,7 @@ from uuid import uuid4
 import pytest
 
 from core.application.common.database.receipt_gateway import (
-    CursorNotInListError,
     ReceiptDBGatewayI,
-    UserNotFoundError,
 )
 from core.application.common.database.user_gateway import UserDBGatewayI
 from core.application.receipt.list import ListReceipt, ListReceiptDTO

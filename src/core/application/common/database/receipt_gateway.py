@@ -22,9 +22,9 @@ class ReceiptDBGatewayI(Protocol):
         user_id: UserID,
         cursor: ReceiptID,
     ) -> Sequence[Receipt]:
-        """Fetch receipts starting from the cursor receipt; returns an empty sequence whe none are found.
+        """Fetch receipts starting from the cursor receipt.
+        Returns an empty sequence when none are found.
         Raises:
-            UserNotFoundError: user was not found
             CursorNotInListError: cursor not in list
         """
         ...
@@ -37,9 +37,6 @@ class ReceiptDBGatewayI(Protocol):
 
 
 class ReceiptNotFoundError(Exception): ...
-
-
-class UserNotFoundError(Exception): ...
 
 
 class CursorNotInListError(Exception): ...
