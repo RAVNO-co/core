@@ -2,6 +2,7 @@ from typing import Protocol
 
 from langchain_core.runnables import RunnableConfig
 from langfuse.langchain import CallbackHandler
+
 from core.application.common.agent import HumanRequest
 
 
