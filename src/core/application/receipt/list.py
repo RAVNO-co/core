@@ -12,6 +12,7 @@ from core.domain.models import Receipt
 from core.domain.value_objects import ReceiptID
 
 
+@dataclass(frozen=True, slots=True)
 class ListReceiptDTO:
     cursor: ReceiptID
 
