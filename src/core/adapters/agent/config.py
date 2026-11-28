@@ -10,11 +10,15 @@ class RunnableConfigFactory(Protocol):
     def __call__(self, request: HumanRequest) -> RunnableConfig: ...
 
 
-def create_runable_config(request: HumanRequest) -> RunnableConfig:
-    return {
-        "configurable": {
-            "thread_id": str(request.receipt.id),
-            "callbacks": [LangfuseCallback()],
+class CreateRunnableConfig(RunnableConfigFactory):
+    def __init__(self) -> None:
+        self.callbacks = [LangfuseCallback()]
+
+    def __call__(self, request: HumanRequest) -> RunnableConfig:
+        return {
+            "configurable": {
+                "thread_id": str(request.receipt.id),
+            },
+            "callbacks": self.callbacks,
             "run_name": "agent-invoke",
-        },
-    }
+        }
