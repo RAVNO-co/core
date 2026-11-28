@@ -47,4 +47,5 @@ async def test_list_normal(
         user_id_provider=user_id_provider_mock,
     )
     res = await interactor(input_dto)
-    assert res.receipts
+    assert len(res.receipts) == 1
+    assert res.receipts[0].id == receipt.id
