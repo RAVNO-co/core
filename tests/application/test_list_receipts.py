@@ -1,5 +1,4 @@
 from unittest.mock import AsyncMock, Mock
-from uuid import uuid4
 
 import pytest
 
@@ -9,7 +8,6 @@ from core.application.common.database.receipt_gateway import (
 from core.application.common.database.user_gateway import UserDBGatewayI
 from core.application.receipt.list import ListReceipt, ListReceiptDTO
 from core.domain.models.receipt import Receipt
-from core.domain.value_objects.types import UserID
 
 
 @pytest.fixture
@@ -50,4 +48,3 @@ async def test_list_normal(
     )
     res = await interactor(input_dto)
     assert res.receipts
-
