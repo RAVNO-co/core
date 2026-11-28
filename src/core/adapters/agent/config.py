@@ -13,6 +13,7 @@ class RunnableConfigFactory(Protocol):
 
 class CreateRunnableConfig(RunnableConfigFactory):
     def __init__(self) -> None:
+        # LangFuseCallbackHandler rewrites Langchain BaseCallback class
         self.callbacks = cast(
             list[BaseCallbackHandler],
             [LangfuseCallback()],
