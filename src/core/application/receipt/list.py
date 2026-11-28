@@ -29,9 +29,9 @@ class ListReceipt(Interactor[ListReceiptDTO, ListReceiptResultDTO]):
     user_id_provider: UserIDProviderI
 
     async def __call__(self, context: ListReceiptDTO) -> ListReceiptResultDTO:
-        user_id = self.user_id_provider.get_current_user_id()
+        participant_id = self.user_id_provider.get_current_user_id()
         receipts = await self.receipt_db_gateway.fetch_many(
-            user_id, context.limit, context.cursor
+            context.limit, context.cursor, participant_ids=[participant_id]
         )
 
         return ListReceiptResultDTO(receipts)
