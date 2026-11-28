@@ -11,7 +11,6 @@ from core.adapters.agent import (
     create_invoke_state,
 )
 from core.adapters.agent.config import (
-    CreateRunnableConfig,
     RunnableConfigFactory,
 )
 from core.adapters.agent.context import ContextFactory
@@ -35,11 +34,6 @@ def state_factory() -> InvokeStateFactory:
 @pytest.fixture
 def context_factory() -> ContextFactory:
     return create_context
-
-
-@pytest.fixture
-def config_factory() -> RunnableConfigFactory:
-    return CreateRunnableConfig()
 
 
 async def test_agent(
