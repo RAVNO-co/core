@@ -19,7 +19,8 @@ class ReceiptDBGatewayI(Protocol):
 
     async def fetch_many(
         self,
-        user_id: UserID,
+        /,
+        participant_id: UserID,
         limit: int,
         cursor: ReceiptID | None = None,
         **filters: Unpack[ReceiptFilters]
