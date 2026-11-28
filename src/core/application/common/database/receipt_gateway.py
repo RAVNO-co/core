@@ -20,7 +20,9 @@ class ReceiptDBGatewayI(Protocol):
     async def fetch_many(
         self,
         user_id: UserID,
-        cursor: ReceiptID,
+        limit: int,
+        cursor: ReceiptID | None = None,
+        **filters: Unpack[ReceiptFilters]
     ) -> Sequence[Receipt]:
         """Fetch receipts starting from the cursor receipt.
         Returns an empty sequence when none are found.
