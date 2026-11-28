@@ -5,7 +5,6 @@ import pytest
 from core.application.common.database.receipt_gateway import (
     ReceiptDBGatewayI,
 )
-from core.application.common.database.user_gateway import UserDBGatewayI
 from core.application.receipt.list import ListReceipt, ListReceiptDTO
 from core.domain.models.receipt import Receipt
 
@@ -18,14 +17,6 @@ def receipt_db_gateway(receipt: Receipt) -> ReceiptDBGatewayI:
 
 
 @pytest.fixture
-def user_db_gateway() -> UserDBGatewayI:
-    user_db_gateway_mock = Mock()
-    user_db_gateway_mock.fetch_many = AsyncMock()
-    user_db_gateway_mock.bulk_save = AsyncMock()
-    return user_db_gateway_mock
-
-
-@pytest.fixture
 def input_dto(receipt: Receipt) -> ListReceiptDTO:
 
     return ListReceiptDTO(cursor=receipt.id, limit=1)
@@ -34,7 +25,6 @@ def input_dto(receipt: Receipt) -> ListReceiptDTO:
 async def test_list_normal(
     receipt: Receipt,
     receipt_db_gateway: ReceiptDBGatewayI,
-    user_db_gateway: UserDBGatewayI,
     input_dto: ListReceiptDTO,
 ) -> None:
 
@@ -43,7 +33,6 @@ async def test_list_normal(
     user_id_provider_mock.get_current_user_id = Mock(return_value=user_id)
     interactor = ListReceipt(
         receipt_db_gateway=receipt_db_gateway,
-        user_db_gateway=user_db_gateway,
         user_id_provider=user_id_provider_mock,
     )
     res = await interactor(input_dto)
