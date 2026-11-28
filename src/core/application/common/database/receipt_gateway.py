@@ -26,8 +26,6 @@ class ReceiptDBGatewayI(Protocol):
     ) -> Sequence[Receipt]:
         """Fetch receipts starting from the cursor receipt.
         Returns an empty sequence when none are found.
-        Raises:
-            CursorNotInListError: cursor not in list
         """
         ...
 
@@ -39,6 +37,3 @@ class ReceiptDBGatewayI(Protocol):
 
 
 class ReceiptNotFoundError(Exception): ...
-
-
-class CursorNotInListError(Exception): ...
