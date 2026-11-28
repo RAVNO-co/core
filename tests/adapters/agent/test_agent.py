@@ -11,8 +11,8 @@ from core.adapters.agent import (
     create_invoke_state,
 )
 from core.adapters.agent.config import (
-    RunnableConfigFactory,
     CreateRunnableConfig,
+    RunnableConfigFactory,
 )
 from core.adapters.agent.context import ContextFactory
 from core.adapters.agent.state import InvokeStateFactory

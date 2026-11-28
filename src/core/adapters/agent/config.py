@@ -1,5 +1,6 @@
-from typing import Protocol
+from typing import Protocol, cast
 
+from langchain_core.callbacks import BaseCallbackHandler
 from langchain_core.runnables import RunnableConfig
 from langfuse.langchain import CallbackHandler as LangfuseCallback
 
@@ -12,7 +13,10 @@ class RunnableConfigFactory(Protocol):
 
 class CreateRunnableConfig(RunnableConfigFactory):
     def __init__(self) -> None:
-        self.callbacks = [LangfuseCallback()]
+        self.callbacks = cast(
+            list[BaseCallbackHandler],
+            [LangfuseCallback()],
+        )
 
     def __call__(self, request: HumanRequest) -> RunnableConfig:
         return {
