@@ -28,7 +28,7 @@ def user_db_gateway() -> UserDBGatewayI:
 @pytest.fixture
 def input_dto(receipt: Receipt) -> ListReceiptDTO:
 
-    return ListReceiptDTO(cursor=receipt.id)
+    return ListReceiptDTO(cursor=receipt.id, limit=1)
 
 
 async def test_list_normal(
