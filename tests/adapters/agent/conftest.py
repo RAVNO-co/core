@@ -6,7 +6,10 @@ from langchain_core.runnables import RunnableConfig
 from mimesis import Text
 
 from core.adapters.agent import create_context, create_invoke_state
-from core.adapters.agent.config import create_runable_config
+from core.adapters.agent.config import (
+    CreateRunnableConfig,
+    RunnableConfigFactory,
+)
 from core.adapters.agent.context import ReceiptModificationContext
 from core.adapters.agent.state import InvokeState, ReceiptModificationState
 from core.adapters.agent.tools.base import ModifyReceiptRuntime
@@ -41,6 +44,11 @@ def human_request(
 
 
 @pytest.fixture
+def config_factory() -> RunnableConfigFactory:
+    return CreateRunnableConfig()
+
+
+@pytest.fixture
 def invoke_state(human_request: HumanRequest) -> InvokeState:
     return create_invoke_state(human_request)
 
@@ -51,8 +59,10 @@ def context(human_request: HumanRequest) -> ReceiptModificationContext:
 
 
 @pytest.fixture
-def config(human_request: HumanRequest) -> RunnableConfig:
-    return create_runable_config(human_request)
+def config(
+    config_factory: RunnableConfigFactory, human_request: HumanRequest
+) -> RunnableConfig:
+    return config_factory(human_request)
 
 
 @pytest.fixture
